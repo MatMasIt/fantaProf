@@ -115,19 +115,12 @@ class Professor implements CRUDL, ASerializable//check
         $this->created = time();
         $this->lastEdit = $this->created;
         $q->execute([//check
-            ":title" => $this->title,
-            ":description" => $this->description,
-            ":gameMasterId" => $this->gameMasterId,
-            ":maxBettableProfs" => $this->maxBettableProfs,
-            ":start" => $this->start,
-            ":end" => $this->end,
-            ":professorIds" => (string) $this->professorIds,
-            ":descriptorIds" => (string) $this->descriptorIds,
+            ":name" => $this->name,
+            ":surname" => $this->surname,
             ":lastEdit" => $this->lastEdit,
             ":created" => $this->created,
             ":id" => $this->id
         ]);
-        $this->passwordHash = $hash;
         $this->id = $this->database->lastInsertId();
     }
     public function deserialize(array $r): void
