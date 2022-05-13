@@ -114,9 +114,12 @@ class Descriptor implements CRUDL, ASerializable
     }
     public function deserialize(array $r): void
     {
-        return [];
+        $this->authorId = $r["authorId"];
+        $this->title = $r["title"];
+        $this->delta = $r["delta"];
     }
     public function serialize(): array
     {
+        return ["authorId"=>$this->authorId, "title"=>$this->title, "delta" => $this->delta];
     }
 }
