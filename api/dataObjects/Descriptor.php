@@ -99,7 +99,7 @@ class Descriptor implements CRUDL, ASerializable
     {
         $this->deserialize($data);
         $hash = password_hash($data["password"], PASSWORD_DEFAULT);
-        $q = $this->database->prepare("INSERT INTO Descriptor(authorId, title, description, delta lastEdit, created) VALUES(:authorId, :title, :description, :delta, :lastEdit, :created)");
+        $q = $this->database->prepare("INSERT INTO Descriptors(authorId, title, description, delta lastEdit, created) VALUES(:authorId, :title, :description, :delta, :lastEdit, :created)");
         $this->created = time();
         $this->lastEdit = $this->created;
         $q->execute([
