@@ -1,0 +1,42 @@
+Fantaprof test suite without persistence
+Simple fantaprof test suite
+
+Preparatory task
+Prepare Database
+Backup the database and clean the testing site
+
+Copying api/database.sqlite3 in api/database.sqlite3.backup
+PASS
+
+[26/04/2022 12:51:11] Test 1 of 9
+Create a mock account
+Create an account
+
+Data: 
+{
+    "action": "users\/signUp",
+    "username": "MatMasIt",
+    "name": "Mattia",
+    "surname": "Mascarello",
+    "email": "mattia.mascarello@outlook.it",
+    "classe": "5E",
+    "password": "prova",
+    "imgUrl": "https:\/\/cdn.pixabay.com\/photo\/2013\/07\/12\/17\/47\/test-pattern-152459_960_720.png"
+}
+Response: 
+
+
+Got 500 HTTP response
+
+FAIL
+
+
+Suite FAILED at test 1
+
+Cleanup task
+Restore Database
+Restore the pre-test database
+
+Copying api/database.sqlite3.backup back into api/database.sqlite3
+PASS
+

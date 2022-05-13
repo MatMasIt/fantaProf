@@ -1,0 +1,96 @@
+users/signUp
+    -name
+    -surname
+    -username
+    -email
+    -classe
+    -password
+return true || false
+
+users/login
+    -username || -email
+    -password
+return token || false
+
+users/changePassword
+    -token
+    -oldpassword
+    -newpassword
+return true || false
+
+users/delete
+    -token
+    -password
+return true || false
+
+users/getMe
+    -token
+return  -name
+        -surname
+        -username
+        -email
+        -classe
+
+
+
+
+
+
+games/list
+    -token
+return []
+
+
+games/create
+    -token
+    -title
+    -description
+    -start
+    -end
+    -professorIds
+return gameId
+
+
+games/create
+    -token
+    -title
+    -description
+    -start
+    -end
+    -professorIds
+return gameId
+
+
+games/join
+    -token
+    -gameId
+    -bettedProfessorsIds
+return true || false
+
+
+games/delete
+    -token
+    -gameId
+return true || false
+
+
+games/status
+    -token
+    -gameId
+return gameReport
+
+
+professors/add
+    -name
+    -surname
+    -token
+return professorId
+
+
+professors/delete
+    -professorId
+    -token
+return true || false
+
+
+professors/
