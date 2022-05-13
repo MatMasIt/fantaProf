@@ -78,4 +78,8 @@ class LoggedInUser // the only authorized handle for authenticated users
         }
         return false;
     }
+    public function isSystemMaster()
+    {
+        return $this->id == 9;
+    }
 }

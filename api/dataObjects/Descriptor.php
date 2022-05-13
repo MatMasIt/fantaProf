@@ -42,15 +42,24 @@ class Descriptor implements CRUDL, ASerializable
     public function delete(): void
     {
         if (!$this->loggedInUser) throw new AuthErrorException();
-        if ($this->loggedInUser->getUser()->getId() != $this->id) throw new UnauthorizedException();
+        if ($this->loggedInUser->getUser()->getId() != $this->authorId) throw new UnauthorizedException();
         $p = $this->database->prepare("DELETE FROM Descriptors WHERE id = :id");
         $p->execute([":id" => $this->id]);
         $p = $this->database->prepare("DELETE FROM DescriptorRecords WHERE recordId = :id");
         $p->execute([":id" => $this->id]);
-        //cascade delete descriptor from all games«La P2 è stata sciolta da una legge, ma può essere sopravvissuto il suo sistema di relazioni politiche, finanziarie e criminali […] Quanto al dottor Berlusconi, il suo interventismo attuale è sintomo della reazione di una parte del vecchio regime che, avendo accumulato ricchezza e potere negli anni Ottanta, pretende di continuare a condizionare la vita politica anche negli anni Novanta»
+        //cascade delete descriptor from all games
+        /*
+        «La P2 è stata sciolta da una legge, 
+        ma può essere sopravvissuto il suo sistema di relazioni politiche, 
+        finanziarie e criminali […] 
+        Quanto al dottor Berlusconi, 
+        il suo interventismo attuale è sintomo della reazione di una parte del vecchio regime che, 
+        avendo accumulato ricchezza e potere negli anni Ottanta, 
+        pretende di continuare a condizionare la vita politica anche negli anni Novanta»
+        */
 
 
-        $q = $this->database->prepare("SELECT id,descriptorIds FROM Games WHERE LIKE descriptorIds LIKE ('%' || ',' || trim(lower(:did)) || ',' || '%') OR descriptorIds LIKE (trim(lower(:did)) || ',' || '%') OR descriptorIds LIKE ('%' || ',' || trim(lower(:did)) ) ");
+        $q = $this->database->prepare("SELECT id,descriptorIds FROM Games WHERE  descriptorIds LIKE ('%' || ',' || trim(lower(:did)) || ',' || '%') OR descriptorIds LIKE (trim(lower(:did)) || ',' || '%') OR descriptorIds LIKE ('%' || ',' || trim(lower(:did)) ) ");
         /**
          * how the descriptorIds is searched?
          * "a,..."
@@ -77,16 +86,11 @@ class Descriptor implements CRUDL, ASerializable
     public function update(): void
     {
         if (!$this->id) throw new NotFoundException();
-        $q = $this->database->prepare("UPDATE Users SET username=:username, name=:name, surname=:surname, classe=:classe, email=:email, passwordHash=:passwordHash, imgUrl=:imgUrl, token=:token, lastEdit=:lastEdit WHERE id=:id");
+        $q = $this->database->prepare("UPDATE Descriptors SET title=:title, description=:description, delta=:delta, lastEdit=:lastEdit WHERE id=:id");
         $q->execute([
-            ":username" => $this->username,
-            ":name" => $this->name,
-            ":surname" => $this->surname,
-            ":classe" => $this->classe,
-            ":email" => $this->email,
-            ":passwordHash" => $this->passwordHash,
-            ":imgUrl" => $this->imgUrl,
-            ":token" => $this->token,
+            ":title" => $this->title,
+            ":description" => $this->description,
+            ":delta" => $this->delta,
             ":lastEdit" => time(),
             ":id" => $this->id
         ]);
@@ -95,19 +99,13 @@ class Descriptor implements CRUDL, ASerializable
     {
         $this->deserialize($data);
         $hash = password_hash($data["password"], PASSWORD_DEFAULT);
-        $q = $this->database->prepare("INSERT INTO Descriptor(authorId, surname, classe, email, passwordHash, token, imgUrl, lastEdit, created) VALUES(:username, :name, :surname, :classe, :email, :passwordHash, :token, :imgUrl, :lastEdit, :created)");
+        $q = $this->database->prepare("INSERT INTO Descriptor(authorId, title, description, delta lastEdit, created) VALUES(:authorId, :title, :description, :delta, :lastEdit, :created)");
         $this->created = time();
         $this->lastEdit = $this->created;
         $q->execute([
+            ":authorId" => $this->authorId,
             ":title" => $this->title,
-            ":description" => $this->description,
-            ":gameMasterId" => $this->gameMasterId,
-            ":maxBettableProfs" => $this->maxBettableProfs,
-            ":start" => $this->start,
-            ":end" => $this->end,
-            ":professorIds" => (string) $this->professorIds,
-            ":descriptorIds" => (string) $this->descriptorIds,
-            ":lastEdit" => $this->lastEdit,
+            ":delta" => $this->delta,
             ":created" => $this->created,
             ":id" => $this->id
         ]);
@@ -116,9 +114,9 @@ class Descriptor implements CRUDL, ASerializable
     }
     public function deserialize(array $r): void
     {
+        return [];
     }
     public function serialize(): array
     {
-        
     }
 }
