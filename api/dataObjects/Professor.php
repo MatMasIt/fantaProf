@@ -6,8 +6,9 @@ class Professor implements CRUDL, ASerializable//check
     private int $id;
     private string $name, $surname;
     private int $created, $lastEdit;
-
-    function __construct(PDO $database, ?LoggedInUser $loggedInUser)
+    private PDO $database;
+    private LoggedInUser $loggedInUser;
+    function __construct(PDO $database, LoggedInUser $loggedInUser)
     {
         $this->database = $database;
         $this->loggedInUser = $loggedInUser;
@@ -40,61 +41,24 @@ class Professor implements CRUDL, ASerializable//check
     }
     public function delete(): void
     {
-        if (!$this->loggedInUser) throw new AuthErrorException();
         if ($this->loggedInUser->getUser()->getId() != $this->id) throw new UnauthorizedException();
         $p = $this->database->prepare("DELETE FROM Professors WHERE id = :id");
         $p->execute([":id" => $this->id]);
         //cascade delete descriptor from all games and snaicards
 
-        $q = $this->database->prepare("SELECT id, professorIds FROM Games WHERE professorIds LIKE ('%' || ',' || trim(lower(:did)) || ',' || '%') OR professorIds LIKE (trim(lower(:did)) || ',' || '%') OR professorIds LIKE ('%' || ',' || trim(lower(:did)) ) ");
-        /**
-         * how the descriptorIds is searched?
-         * "a,..."
-         * "...,a,..."
-         * "...,a"
-         */
-
-        $q->execute([
-            ":did" => (string) $this->id
-        ]);
-        
-        $re = $q->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($re as $result) {
-            $ar = explode(",", $result["professorIds"]);
-            if (($key = array_search($this->id, $ar)) !== false) {
-                unset($ar[$key]);
-            }
-            $q = $this->database->prepare("UPDATE Games SET professorIds = :did WHERE id=:id");
-            $q->execute([
-                ":did" => implode(",", $ar),
-                ":id" => $this->id
-            ]);
+        // new OOP approach
+        $game = new Game($this->database, $this->loggedInUser);
+        $gameList = $game->list();
+        foreach($gameList as $d){
+            $l = $d->getDescriptorIds();
+            $l->remove($this->id);
+            $d->setDescriptorids($l);
+            $p = $d->getProfessorIds();
+            $p->remove($this->id);
+            $d->setProfessorIds($l);
+            $d->delete();
         }
-
-        $q = $this->database->prepare("SELECT id, bettedProfsIds FROM SNAICards WHERE bettedProfsIds LIKE ('%' || ',' || trim(lower(:did)) || ',' || '%') OR bettedProfsIds LIKE (trim(lower(:did)) || ',' || '%') OR bettedProfsIds LIKE ('%' || ',' || trim(lower(:did)) ) ");
-        /**
-         * how the descriptorIds is searched?
-         * "a,..."
-         * "...,a,..."
-         * "...,a"
-         */
-
-        $q->execute([
-            ":did" => (string) $this->id
-        ]);
-        
-        $re = $q->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($re as $result) {
-            $ar = explode(",", $result["bettedProfsIds"]);
-            if (($key = array_search($this->id, $ar)) !== false) {
-                unset($ar[$key]);
-            }
-            $q = $this->database->prepare("UPDATE SNAICards SET bettedProfsIds = :did WHERE id=:id");
-            $q->execute([
-                ":did" => implode(",", $ar),
-                ":id" => $this->id
-            ]);
-        }
+       
     }
     public function update(): void
     {

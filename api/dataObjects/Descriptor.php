@@ -7,7 +7,9 @@ class Descriptor implements CRUDL, ASerializable
     private string $title, $description;
     private int $authorId;
     private int $delta, $lastEdit, $created;
-    function __construct(PDO $database, ?LoggedInUser $loggedInUser)
+    private PDO $database;
+    private LoggedInUser $loggedInUser;
+    function __construct(PDO $database, LoggedInUser $loggedInUser)
     {
         $this->database = $database;
         $this->loggedInUser = $loggedInUser;
@@ -41,10 +43,10 @@ class Descriptor implements CRUDL, ASerializable
     }
     public function delete(): void
     {
-        if (!$this->loggedInUser) throw new AuthErrorException();
         if ($this->loggedInUser->getUser()->getId() != $this->authorId) throw new UnauthorizedException();
         $p = $this->database->prepare("DELETE FROM Descriptors WHERE id = :id");
         $p->execute([":id" => $this->id]);
+        
         $p = $this->database->prepare("DELETE FROM DescriptorRecords WHERE recordId = :id");
         $p->execute([":id" => $this->id]);
         //cascade delete descriptor from all games
@@ -57,31 +59,16 @@ class Descriptor implements CRUDL, ASerializable
         avendo accumulato ricchezza e potere negli anni Ottanta, 
         pretende di continuare a condizionare la vita politica anche negli anni Novanta»
         */
-
-
-        $q = $this->database->prepare("SELECT id,descriptorIds FROM Games WHERE  descriptorIds LIKE ('%' || ',' || trim(lower(:did)) || ',' || '%') OR descriptorIds LIKE (trim(lower(:did)) || ',' || '%') OR descriptorIds LIKE ('%' || ',' || trim(lower(:did)) ) ");
-        /**
-         * how the descriptorIds is searched?
-         * "a,..."
-         * "...,a,..."
-         * "...,a"
-         */
-
-        $q->execute([
-            ":did" => (string) $this->id
-        ]);
-        $re = $q->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($re as $result) {
-            $ar = explode(",", $result["descriptorIds"]);
-            if (($key = array_search($this->id, $ar)) !== false) {
-                unset($ar[$key]);
-            }
-            $q = $this->database->prepare("UPDATE Games SET descriptorIds = :did WHERE id=:id");
-            $q->execute([
-                ":did" => implode(",", $ar),
-                ":id" => $this->id
-            ]);
+        // new OOP approach
+        $game = new Game($this->database, $this->loggedInUser);
+        $gameList = $game->list();
+        foreach($gameList as $d){
+            $l = $d->getDescriptorIds();
+            $l->remove($this->id);
+            $d->setDescriptorids($l);
+            $d->update();
         }
+        
     }
     public function update(): void
     {
@@ -109,7 +96,6 @@ class Descriptor implements CRUDL, ASerializable
             ":created" => $this->created,
             ":id" => $this->id
         ]);
-        $this->passwordHash = $hash;
         $this->id = $this->database->lastInsertId();
     }
     public function deserialize(array $r): void
