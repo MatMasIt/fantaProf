@@ -8,7 +8,7 @@ Backup the database and clean the testing site
 Copying api/database.sqlite3 in api/database.sqlite3.backup
 PASS
 
-[26/04/2022 12:51:11] Test 1 of 9
+[23/05/2022 22:46:11] Test 1 of 9
 Create a mock account
 Create an account
 
@@ -25,13 +25,213 @@ Data:
 }
 Response: 
 
+{
+    "ok": true,
+    "data": {
+        "id": 1
+    }
+}
+Took 0.100375 s
+PASS
 
-Got 500 HTTP response
-
-FAIL
-
+[23/05/2022 22:46:11] Test 2 of 9
+Login with email
+Use email for login
 
-Suite FAILED at test 1
+Data: 
+{
+    "action": "users\/loginEmail",
+    "email": "mattia.mascarello@outlook.it",
+    "password": "prova"
+}
+Response: 
+
+{
+    "ok": true,
+    "data": {
+        "id": 1,
+        "username": "MatMasIt",
+        "name": "Mattia",
+        "surname": "Mascarello",
+        "classe": "5E",
+        "email": "mattia.mascarello@outlook.it",
+        "imgUrl": "https:\/\/cdn.pixabay.com\/photo\/2013\/07\/12\/17\/47\/test-pattern-152459_960_720.png",
+        "lastEdit": "2022-05-23T22:46:11+02:00",
+        "created": "2022-05-23T22:46:11+02:00",
+        "token": "0dcfbc0375ac3a12e480f569bf590b7d"
+    }
+}
+Took 0.088677 s
+PASS
+
+[23/05/2022 22:46:11] Test 3 of 9
+Login with username
+Use username for login
+
+Data: 
+{
+    "action": "users\/loginUsername",
+    "username": "MatMasIt",
+    "password": "prova"
+}
+Response: 
+
+{
+    "ok": true,
+    "data": {
+        "id": 1,
+        "username": "MatMasIt",
+        "name": "Mattia",
+        "surname": "Mascarello",
+        "classe": "5E",
+        "email": "mattia.mascarello@outlook.it",
+        "imgUrl": "https:\/\/cdn.pixabay.com\/photo\/2013\/07\/12\/17\/47\/test-pattern-152459_960_720.png",
+        "lastEdit": "2022-05-23T22:46:11+02:00",
+        "created": "2022-05-23T22:46:11+02:00",
+        "token": "b9737928ebb6ee31709b4d1631db5ef8"
+    }
+}
+Took 0.089935 s
+PASS
+
+[23/05/2022 22:46:11] Test 4 of 9
+Get session with token
+Use toke for session
+
+Data: 
+{
+    "action": "users\/getMe",
+    "token": "b9737928ebb6ee31709b4d1631db5ef8"
+}
+Response: 
+
+{
+    "ok": true,
+    "data": {
+        "id": 1,
+        "username": "MatMasIt",
+        "name": "Mattia",
+        "surname": "Mascarello",
+        "classe": "5E",
+        "email": "mattia.mascarello@outlook.it",
+        "imgUrl": "https:\/\/cdn.pixabay.com\/photo\/2013\/07\/12\/17\/47\/test-pattern-152459_960_720.png",
+        "lastEdit": "2022-05-23T22:46:11+02:00",
+        "created": "2022-05-23T22:46:11+02:00",
+        "token": "b9737928ebb6ee31709b4d1631db5ef8"
+    }
+}
+Took 0.000702 s
+PASS
+
+[23/05/2022 22:46:11] Test 5 of 9
+Change password
+Change password with old password and session token
+
+Data: 
+{
+    "action": "users\/changePassword",
+    "token": "b9737928ebb6ee31709b4d1631db5ef8",
+    "password": "prova",
+    "newPassword": "prova2"
+}
+Response: 
+
+{
+    "ok": true,
+    "data": []
+}
+Took 0.144118 s
+PASS
+
+[23/05/2022 22:46:11] Test 6 of 9
+New password login
+Use email and new password for login
+
+Data: 
+{
+    "action": "users\/loginEmail",
+    "email": "mattia.mascarello@outlook.it",
+    "password": "prova2"
+}
+Response: 
+
+{
+    "ok": true,
+    "data": {
+        "id": 1,
+        "username": "MatMasIt",
+        "name": "Mattia",
+        "surname": "Mascarello",
+        "classe": "5E",
+        "email": "mattia.mascarello@outlook.it",
+        "imgUrl": "https:\/\/cdn.pixabay.com\/photo\/2013\/07\/12\/17\/47\/test-pattern-152459_960_720.png",
+        "lastEdit": "2022-05-23T22:46:11+02:00",
+        "created": "2022-05-23T22:46:11+02:00",
+        "token": "578d3fa06ece0f809adec1e3a60b4cbc"
+    }
+}
+Took 0.089853 s
+PASS
+
+[23/05/2022 22:46:11] Test 7 of 9
+Incorrect login
+Use email and incorrect password for login
+
+Data: 
+{
+    "action": "users\/loginEmail",
+    "email": "mattia.mascarello@outlook.it",
+    "password": "errata"
+}
+Response: 
+
+{
+    "ok": false,
+    "error": "AuthErrorException : Cannot be authorized"
+}
+Took 0.051867 s
+PASS
+
+[23/05/2022 22:46:11] Test 8 of 9
+Delete account
+Use token and password for account deletion
+
+Data: 
+{
+    "action": "users\/delete",
+    "token": "578d3fa06ece0f809adec1e3a60b4cbc",
+    "password": "prova2"
+}
+Response: 
+
+{
+    "ok": true,
+    "data": []
+}
+Took 0.104317 s
+PASS
+
+[23/05/2022 22:46:11] Test 9 of 9
+Login after deletion
+Use email for login after deletion
+
+Data: 
+{
+    "action": "users\/loginEmail",
+    "email": "mattia.mascarello@outlook.it",
+    "password": "prova"
+}
+Response: 
+
+{
+    "ok": false,
+    "error": "AuthErrorException : Cannot be authorized"
+}
+Took 0.000781 s
+PASS
+
+
+Suite PASSED
 
 Cleanup task
 Restore Database

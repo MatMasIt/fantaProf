@@ -157,4 +157,12 @@ class Professor implements CRUDL, ASerializable //check
     {
         return date("c", $this->lastEdit);
     }
+
+    /**
+     * Get the value of id
+     */ 
+    public function getId()
+    {
+        return $this->id;
+    }
 }

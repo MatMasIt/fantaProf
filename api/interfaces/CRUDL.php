@@ -6,5 +6,5 @@ interface CRUDL
     public function delete(): void;
     public function update(): void;
     public function create(array $data): void;
-    public function __construct(PDO $database, ?LoggedInUser $loggedInUser);
+    //public function __construct(PDO $database, ?LoggedInUser $loggedInUser); nullable is not universal
 }

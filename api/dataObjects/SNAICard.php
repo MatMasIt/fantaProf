@@ -108,4 +108,12 @@ class SNAICard implements CRUDL, ASerializable
     {
         $this->bettedProfsId = $bettedProfsId;
     }
+
+    /**
+     * Get the value of id
+     */ 
+    public function getId()
+    {
+        return $this->id;
+    }
 }
