@@ -65,11 +65,21 @@ class SNAICard implements CRUDL, ASerializable
     }
     public function deserialize(array $r): void
     {
-        return [];
+        (Game($this->database, $this->loggedInUser))->get((int) $r["gameId"]);
+        (User($this->database, $this->loggedInUser))->get((int) $r["userId"]);
+
+        $this->gameId = (int) $r["gameId"];
+        $this->userId = (int) $r["userId"];
     }
     public function serialize(): array
     {
-    }
+        return [
+            "id" $this->id,
+            "gameId" $this->gameId,
+            "userId" => $this->userId,
+            "bettedProfsId" => $this->bettedProfsId->getList()
+        ];
+     }
     public function getUserId(): int{
         return $this->userId;
     }

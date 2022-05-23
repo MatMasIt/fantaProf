@@ -89,9 +89,17 @@ class Professor implements CRUDL, ASerializable//check
     }
     public function deserialize(array $r): void
     {
+        
     }
     public function serialize(): array
     {
-        
+        return[
+            "id" => $this->id,
+            "name" => $this->name,
+            "surname" => $this->surname,
+            "lastEdit" => date("c", $this->lastEdit),
+            "created" => date("c", $this->created)
+            
+        ];
     }
 }

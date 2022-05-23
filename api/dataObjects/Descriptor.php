@@ -73,9 +73,10 @@ class Descriptor implements CRUDL, ASerializable
     public function update(): void
     {
         if (!$this->id) throw new NotFoundException();
-        $q = $this->database->prepare("UPDATE Descriptors SET title=:title, description=:description, delta=:delta, lastEdit=:lastEdit WHERE id=:id");
+        $q = $this->database->prepare("UPDATE Descriptors SET title=:title, authorId=:authorId, description=:description, delta=:delta, lastEdit=:lastEdit WHERE id=:id");
         $q->execute([
             ":title" => $this->title,
+            ":authorId" => $this->authorId,
             ":description" => $this->description,
             ":delta" => $this->delta,
             ":lastEdit" => time(),
@@ -86,7 +87,7 @@ class Descriptor implements CRUDL, ASerializable
     {
         $this->deserialize($data);
         $hash = password_hash($data["password"], PASSWORD_DEFAULT);
-        $q = $this->database->prepare("INSERT INTO Descriptors(authorId, title, description, delta lastEdit, created) VALUES(:authorId, :title, :description, :delta, :lastEdit, :created)");
+        $q = $this->database->prepare("INSERT INTO Descriptors(authorId, title, description, delta, lastEdit, created) VALUES(:authorId, :title, :description, :delta, :lastEdit, :created)");
         $this->created = time();
         $this->lastEdit = $this->created;
         $q->execute([
@@ -94,18 +95,27 @@ class Descriptor implements CRUDL, ASerializable
             ":title" => $this->title,
             ":delta" => $this->delta,
             ":created" => $this->created,
+            ":description" => $this->description,            
+            ":lastEdit" => $this->lastEdit,
             ":id" => $this->id
         ]);
         $this->id = $this->database->lastInsertId();
     }
     public function deserialize(array $r): void
     {
-        $this->authorId = $r["authorId"];
-        $this->title = $r["title"];
-        $this->delta = $r["delta"];
+        $this->authorId = (int) $r["authorId"];
+        $this->title = (string) $r["title"];
+        $this->delta = (float) $r["delta"];
+        $this->delta = (string) $r["description"];
     }
     public function serialize(): array
     {
-        return ["authorId"=>$this->authorId, "title"=>$this->title, "delta" => $this->delta];
+        return [
+            "id"=> $this->id,
+            "authorId"=>$this->authorId, 
+            "title"=>$this->title, 
+            "description"=>$this->description, 
+            "delta" => $this->delta
+        ];
     }
 }

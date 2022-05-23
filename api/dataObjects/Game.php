@@ -78,17 +78,13 @@ class Game implements CRUDL, ASerializable
         $q = $this->database->prepare("INSERT INTO Games(title, description, gameMasterId, maxBettableProfs, start, end, professorIds, descriptorIds, lastEdit, created) VALUES(:title, :description, :gameMasterId, :maxBettableProfs, :start, :end, :professorIds, :descriptorIds, :lastEdit, :created)");
         $this->created = time();
         $this->lastEdit = $this->created;
-        $this->professorIds = new IdFieldList($this->database, new Professor($this->database, $this->loggedInUser));
-        $this->professorIds->setList($data["professors"]);
-        $this->descriptorIds = new IdFieldList($this->database, new Professor($this->database, $this->loggedInUser));
-        $this->descriptorIds->setList($data["descriptors"]);
         $q->execute([
-            ":title" => $data["title"],
-            ":description" => $data["description"],
+            ":title" => $this->title,
+            ":description" => $this->description,
             ":gameMasterId" => $this->loggedInUser->getUser()->getId(),
-            ":maxBettableProfs" => $data["maxBettableProfs"],
-            ":start" => $data["start"],
-            ":end" => $data["end"],
+            ":maxBettableProfs" => $this->maxBettableProfs,
+            ":start" => $this->start,
+            ":end" => $this->end,
             ":professorIds" => (string) $this->professorIds,
             ":descriptorIds" => (string) $this->descriptorIds,
             ":lastEdit" => $this->lastEdit,
@@ -103,26 +99,30 @@ class Game implements CRUDL, ASerializable
         $this->description = $r["description"];
         $this->gameMasterId = (int) $r["gameMasterId"];
         $this->maxBettableProfs = (int) $r["maxBettableProfs"];
-        $this->start = (int) $r["start"];
-        $this->end = (int) $r["end"];
+        $this->start = (int) strtotime($r["start"]);
+        $this->end = (int) strtotime($r["end"]);
         $this->professorIds = new IdFieldList($this->database, new Professor($this->database, $this->loggedInUser));
-        $this->professorIds->loadString($r["professorIds"]);
+        $this->professorIds->setList($r["professorIds"]);
         $this->descriptorIds = new IdFieldList($this->database, new Descriptor($this->database, $this->loggedInUser));
-        $this->professorIds->loadString($r["descriptorIds"]);
+        $this->professorIds->setList($r["descriptorIds"]);
     }
     public function serialize(): array
     {
+        (User($this->database, $this->loggedInUser))->get((int) $r["gameMasterId"]);
+        // exceptions will be thrown on error
+        
         return [
             "id" => $this->id,
             "title" => $this->title,
             "description" => $this->description,
             "gameMasterId" => $this->gameMasterId,
             "maxBettableProfs" => $this->maxBettableProfs,
-            "start" => $this->start,
-            "end" => $this->end,
-            "professorIds" => (string) $this->professorIds,
-            "descriptorIds" => (string) $this->descriptorIds,
-            "lastEdit" => $this->lastEdit
+            "start" => date("c", $this->start),
+            "end" => date("c", $this->end),
+            "professorIds" => $this->professorIds->getList(),
+            "descriptorIds" => (string) $this->descriptorIds->getList(),
+            "lastEdit" => date("c", $this->lastEdit),
+            "created" => date("c", $this->created)
         ];
     }
 
