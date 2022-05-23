@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS "Professors" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"name"	TEXT NOT NULL,
 	"surname"	TEXT NOT NULL,
+	"photoUrl" TEXT NOT NULL,
+	"comment" TEXT NOT NULL,
 	"lastEdit"	INTEGER,
 	"created"	INTEGER,
 	PRIMARY KEY("id" AUTOINCREMENT)

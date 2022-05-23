@@ -4,7 +4,7 @@
 class Professor implements CRUDL, ASerializable //check
 {
     private int $id;
-    private string $name, $surname;
+    private string $name, $surname, $photoUrl, $comment;
     private int $created, $lastEdit;
     private PDO $database;
     private LoggedInUser $loggedInUser;
@@ -19,11 +19,13 @@ class Professor implements CRUDL, ASerializable //check
         $q->execute([":id" => $id]);
         $r = $q->fetch(PDO::FETCH_ASSOC);
         if (!$r) throw new NotFoundException();
-        $this->id = $id;
-        $this->name = $r["name"];
+        $this->id = (int) $id;
+        $this->name = (string) $r["name"];
         $this->surname = $r["surname"];
         $this->created = (int) $r["created"];
         $this->lastEdit = (int) $r["lastEdit"];
+        $this->photoUrl = (string) $r["photoUrl"];
+        $this-> comment = (string) $r["comment"];
     }
     public function list($preserialize = true): array
     {
@@ -61,10 +63,12 @@ class Professor implements CRUDL, ASerializable //check
     public function update(): void
     {
         if (!$this->id) throw new NotFoundException();
-        $q = $this->database->prepare("UPDATE Professors SET name=:name, surname=:surname, lastEdit=:lastEdit WHERE id=:id");
+        $q = $this->database->prepare("UPDATE Professors SET name=:name, surname=:surname, photoUrl=:photoUrl, comment = :comment, lastEdit=:lastEdit WHERE id=:id");
         $q->execute([
             ":name" => $this->name,
             ":surname" => $this->surname,
+            ":photoUrl" => $this->photoUrl,
+            ":comment" => $this->comment,
             ":lastEdit" => time(),
             ":id" => $this->id
         ]);
@@ -73,13 +77,15 @@ class Professor implements CRUDL, ASerializable //check
     {
         $this->deserialize($data);
         $hash = password_hash($data["password"], PASSWORD_DEFAULT);
-        $q = $this->database->prepare("INSERT INTO Professor(name, surname, lastEdit, created) VALUES( :name, :surname, :lastEdit, :created)");
+        $q = $this->database->prepare("INSERT INTO Professor(name, surname, photoUrl, comment, lastEdit, created) VALUES( :name, :surname, :photoUrl, :comment, :lastEdit, :created)");
         $this->created = time();
         $this->lastEdit = $this->created;
         $q->execute([ //check
             ":name" => $this->name,
             ":surname" => $this->surname,
             ":lastEdit" => $this->lastEdit,
+            ":photoUrl" => $this->photoUrl,
+            ":comment" => $this-> comment,
             ":created" => $this->created,
             ":id" => $this->id
         ]);
@@ -89,6 +95,8 @@ class Professor implements CRUDL, ASerializable //check
     {
         $this->name = (string) $r["name"];
         $this->surname = (string) $r["surname"];
+        $this->photoUrl = (string) $r["photoUrl"];
+        $this->$comment = (string) $r["comment"];
     }
     public function serialize(): array
     {
@@ -96,6 +104,8 @@ class Professor implements CRUDL, ASerializable //check
             "id" => $this->id,
             "name" => $this->name,
             "surname" => $this->surname,
+            "photoUrl" => $this->photoUrl,
+            "comment" => $this->comment,
             "lastEdit" => date("c", $this->lastEdit),
             "created" => date("c", $this->created)
 
@@ -164,5 +174,21 @@ class Professor implements CRUDL, ASerializable //check
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getPhotoUrl(){
+        return $this->photoUrl;
+    }
+
+    public function setPhotoUrl(string $url){
+        $this->photoUrl = $url;
+    }
+
+    public function getComment(){
+        return $this->comment;
+    }
+
+    public function setComment(string $comment){
+        $this->comment = $comment;
     }
 }
