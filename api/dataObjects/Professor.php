@@ -96,7 +96,7 @@ class Professor implements CRUDL, ASerializable //check
         $this->name = (string) $r["name"];
         $this->surname = (string) $r["surname"];
         $this->photoUrl = (string) $r["photoUrl"];
-        $this->$comment = (string) $r["comment"];
+        $this->comment = (string) $r["comment"];
     }
     public function serialize(): array
     {
