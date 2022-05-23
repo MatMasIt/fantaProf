@@ -1,7 +1,7 @@
 <?php
 //id name surname
 
-class Professor implements CRUDL, ASerializable//check
+class Professor implements CRUDL, ASerializable //check
 {
     private int $id;
     private string $name, $surname;
@@ -24,7 +24,6 @@ class Professor implements CRUDL, ASerializable//check
         $this->surname = $r["surname"];
         $this->created = (int) $r["created"];
         $this->lastEdit = (int) $r["lastEdit"];
-
     }
     public function list($preserialize = true): array
     {
@@ -34,8 +33,8 @@ class Professor implements CRUDL, ASerializable//check
         $final = [];
         foreach ($re as $result) {
             $u = new Professor($this->database, $this->loggedInUser);
-            $u->deserialize((int) $result["id"]);
-            if(!$preserialize) $final[] = $u;
+            $u->get((int) $result["id"]);
+            if (!$preserialize) $final[] = $u;
             else $final[] = $u->serialize();
         }
         return $final;
@@ -49,7 +48,7 @@ class Professor implements CRUDL, ASerializable//check
         // new OOP approach
         $game = new Game($this->database, $this->loggedInUser);
         $gameList = $game->list();
-        foreach($gameList as $d){
+        foreach ($gameList as $d) {
             $l = $d->getDescriptorIds();
             $l->remove($this->id);
             $d->setDescriptorids($l);
@@ -58,7 +57,6 @@ class Professor implements CRUDL, ASerializable//check
             $d->setProfessorIds($l);
             $d->delete();
         }
-       
     }
     public function update(): void
     {
@@ -78,7 +76,7 @@ class Professor implements CRUDL, ASerializable//check
         $q = $this->database->prepare("INSERT INTO Professor(name, surname, lastEdit, created) VALUES( :name, :surname, :lastEdit, :created)");
         $this->created = time();
         $this->lastEdit = $this->created;
-        $q->execute([//check
+        $q->execute([ //check
             ":name" => $this->name,
             ":surname" => $this->surname,
             ":lastEdit" => $this->lastEdit,
@@ -94,13 +92,69 @@ class Professor implements CRUDL, ASerializable//check
     }
     public function serialize(): array
     {
-        return[
+        return [
             "id" => $this->id,
             "name" => $this->name,
             "surname" => $this->surname,
             "lastEdit" => date("c", $this->lastEdit),
             "created" => date("c", $this->created)
-            
+
         ];
+    }
+
+    /**
+     * Get the value of name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the value of name
+     *
+     * @return  self
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of surname
+     */
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+
+    /**
+     * Set the value of surname
+     *
+     * @return  self
+     */
+    public function setSurname($surname)
+    {
+        $this->surname = $surname;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of created
+     */
+    public function getCreated()
+    {
+        return date("c", $this->created);
+    }
+
+    /**
+     * Get the value of lastEdit
+     */
+    public function getLastEdit()
+    {
+        return date("c", $this->lastEdit);
     }
 }

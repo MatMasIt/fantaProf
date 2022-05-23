@@ -36,8 +36,8 @@ class Descriptor implements CRUDL, ASerializable
         $final = [];
         foreach ($re as $result) {
             $u = new Descriptor($this->database, $this->loggedInUser);
-            $u->deserialize((int) $result["id"]);
-            if(!$preserialize) $final[] = $u;
+            $u->get((int) $result["id"]);
+            if (!$preserialize) $final[] = $u;
             else $final[] = $u->serialize();
         }
         return $final;
@@ -47,7 +47,7 @@ class Descriptor implements CRUDL, ASerializable
         if ($this->loggedInUser->getUser()->getId() != $this->authorId) throw new UnauthorizedException();
         $p = $this->database->prepare("DELETE FROM Descriptors WHERE id = :id");
         $p->execute([":id" => $this->id]);
-        
+
         $p = $this->database->prepare("DELETE FROM DescriptorRecords WHERE recordId = :id");
         $p->execute([":id" => $this->id]);
         //cascade delete descriptor from all games
@@ -63,13 +63,12 @@ class Descriptor implements CRUDL, ASerializable
         // new OOP approach
         $game = new Game($this->database, $this->loggedInUser);
         $gameList = $game->list();
-        foreach($gameList as $d){
+        foreach ($gameList as $d) {
             $l = $d->getDescriptorIds();
             $l->remove($this->id);
             $d->setDescriptorids($l);
             $d->update();
         }
-        
     }
     public function update(): void
     {
@@ -92,11 +91,11 @@ class Descriptor implements CRUDL, ASerializable
         $this->created = time();
         $this->lastEdit = $this->created;
         $q->execute([
-            ":authorId" => $this->authorId,
+            ":authorId" => $this->loggedInUser->getUser()->getId(),
             ":title" => $this->title,
             ":delta" => $this->delta,
             ":created" => $this->created,
-            ":description" => $this->description,            
+            ":description" => $this->description,
             ":lastEdit" => $this->lastEdit,
             ":id" => $this->id
         ]);
@@ -112,11 +111,103 @@ class Descriptor implements CRUDL, ASerializable
     public function serialize(): array
     {
         return [
-            "id"=> $this->id,
-            "authorId"=>$this->authorId, 
-            "title"=>$this->title, 
-            "description"=>$this->description, 
+            "id" => $this->id,
+            "authorId" => $this->authorId,
+            "title" => $this->title,
+            "description" => $this->description,
             "delta" => $this->delta
         ];
+    }
+
+    /**
+     * Get the value of id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get the value of title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the value of title
+     *
+     * @return  self
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set the value of description
+     *
+     * @return  self
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of authorId
+     */
+    public function getAuthorId()
+    {
+        return $this->authorId;
+    }
+
+    /**
+     * Get the value of delta
+     */
+    public function getDelta()
+    {
+        return $this->delta;
+    }
+
+    /**
+     * Set the value of delta
+     *
+     * @return  self
+     */
+    public function setDelta($delta)
+    {
+        $this->delta = $delta;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of lastEdit
+     */
+    public function getLastEdit()
+    {
+        return date("c", $this->lastEdit);
+    }
+
+    /**
+     * Get the value of created
+     */
+    public function getCreated()
+    {
+        return date("c", $this->created);
     }
 }

@@ -43,7 +43,7 @@ class User implements CRUDL, ASerializable
         $final = [];
         foreach ($re as $result) {
             $u = new User($this->database, $this->loggedInUser);
-            $u->deserialize((int) $result["id"]);
+            $u->get((int) $result["id"]);
             if(!$preserialize) $final[] = $u;
             else $final[] = $u->serialize();
         }

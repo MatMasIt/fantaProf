@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/media/mattia/944661a7-c3dc-4e8b-a7ea-b0449d0735ee/Scuola/Informatica/fantaProf'
+make: Leaving directory '/media/mattia/944661a7-c3dc-4e8b-a7ea-b0449d0735ee/Scuola/Informatica/fantaProf'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

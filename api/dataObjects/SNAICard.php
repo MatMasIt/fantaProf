@@ -33,8 +33,8 @@ class SNAICard implements CRUDL, ASerializable
         $final = [];
         foreach ($re as $result) {
             $u = new SNAICard($this->database, $this->loggedInUser);
-            $u->deserialize((int) $result["id"]);
-            if(!$preserialize) $final[] = $u;
+            $u->get((int) $result["id"]);
+            if (!$preserialize) $final[] = $u;
             else $final[] = $u->serialize();
         }
         return $final;
@@ -44,9 +44,20 @@ class SNAICard implements CRUDL, ASerializable
         if ($this->loggedInUser->getUser()->getId() != $this->authorId) throw new UnauthorizedException();
         $p = $this->database->prepare("DELETE FROM SNAICards WHERE id = :id");
         $p->execute([":id" => $this->id]);
-        
+
         //cascade delete descriptor from all games
-        
+
+    }
+    public function update(): void
+    {
+        if (!$this->id) throw new NotFoundException();
+        $q = $this->database->prepare("UPDATE SNAICards SET gameId=:gameId, userId=:userId, bettedProfsId=:bettedProfsId WHERE id=:id");
+        $q->execute([
+            ":gameId" => $this->gameId,
+            ":userId" => $this->userId,
+            ":bettedProfsId" => (string) $this->bettedProfsId,
+            ":id" => $this->id
+        ]);
     }
     public function create(array $data): void
     {
@@ -66,8 +77,8 @@ class SNAICard implements CRUDL, ASerializable
     }
     public function deserialize(array $r): void
     {
-        (Game($this->database, $this->loggedInUser))->get((int) $r["gameId"]);
-        (User($this->database, $this->loggedInUser))->get((int) $r["userId"]);
+        (new Game($this->database, $this->loggedInUser))->get((int) $r["gameId"]);
+        (new User($this->database, $this->loggedInUser))->get((int) $r["userId"]);
 
         $this->gameId = (int) $r["gameId"];
         $this->userId = (int) $r["userId"];
@@ -75,22 +86,26 @@ class SNAICard implements CRUDL, ASerializable
     public function serialize(): array
     {
         return [
-            "id" $this->id,
-            "gameId" $this->gameId,
+            "id" => $this->id,
+            "gameId" => $this->gameId,
             "userId" => $this->userId,
             "bettedProfsId" => $this->bettedProfsId->getList()
         ];
-     }
-    public function getUserId(): int{
+    }
+    public function getUserId(): int
+    {
         return $this->userId;
     }
-    public function getGameId(): int{
+    public function getGameId(): int
+    {
         return $this->gameId;
     }
-    public function getBettedprofsIds(): IdFieldList{
+    public function getBettedprofsIds(): IdFieldList
+    {
         return $this->bettedProfsId;
     }
-    public function setBettedprofsIds(IdFieldList $bettedProfsId): void{
+    public function setBettedprofsIds(IdFieldList $bettedProfsId): void
+    {
         $this->bettedProfsId = $bettedProfsId;
     }
 }

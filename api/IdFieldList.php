@@ -37,14 +37,20 @@ class IdFieldList
     {
         $this->idList = $this->loadString(implode(",", $list));
     }
-    public function remove(int $id): bool {
+    public function remove(int $id): bool
+    {
         if (($key = array_search($id, $this->idList)) !== false) {
             unset($messages[$key]);
             return true;
         }
         return false;
     }
-    public function add(int $id): void{
+    public function add(int $id): void
+    {
         $this->idList[] = $id;
+    }
+    public function size(): int
+    {
+        return count($this->idList);
     }
 }

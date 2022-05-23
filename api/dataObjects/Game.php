@@ -40,8 +40,8 @@ class Game implements CRUDL, ASerializable
         $final = [];
         foreach ($re as $result) {
             $u = new Game($this->database, $this->loggedInUser);
-            $u->deserialize((int) $result["id"]);
-            if(!$preserialize) $final[] = $u;
+            $u->get((int) $result["id"]);
+            if (!$preserialize) $final[] = $u;
             else $final[] = $u->serialize();
         }
         return $final;
@@ -109,9 +109,9 @@ class Game implements CRUDL, ASerializable
     }
     public function serialize(): array
     {
-        (User($this->database, $this->loggedInUser))->get((int) $r["gameMasterId"]);
+        (new User($this->database, $this->loggedInUser))->get((int) $this->gameMasterId);
         // exceptions will be thrown on error
-        
+
         return [
             "id" => $this->id,
             "title" => $this->title,
@@ -236,16 +236,20 @@ class Game implements CRUDL, ASerializable
 
         return $this;
     }
-    public function getProfessorIds(): IdFieldList{
+    public function getProfessorIds(): IdFieldList
+    {
         return $this->professorIds;
     }
-    public function setProfessorIds(IdFieldList $professorIds): void{
+    public function setProfessorIds(IdFieldList $professorIds): void
+    {
         $this->professorIds = $professorIds;
     }
-    public function getDescriptorIds(): IdFieldList{
+    public function getDescriptorIds(): IdFieldList
+    {
         return $this->professorIds;
     }
-    public function setDescriptorids(IdFieldList $descriptorIds): void{
+    public function setDescriptorids(IdFieldList $descriptorIds): void
+    {
         $this->descriptorIds = $descriptorIds;
     }
 }
