@@ -56,6 +56,59 @@ try {
             }
             Reply::error("NOT_AUTHENTICATED");
             break;
+        case "users/list":
+            
+            break;
+        case "users/get":
+            break;
+        case "games/list":
+            break;
+        case "games/create":
+            break;
+        case "games/delete":
+            break;
+        case "games/update":
+            break;
+        case "professors/list":
+            break;
+        case "professors/create":
+            break;
+        case "professors/delete":
+            break;
+        case "professors/update":
+            break;
+        case "snaicards/list":
+            break;
+        case "snaicards/create":
+            break;
+        case "snaicards/delete":
+            break;
+        case "snaicards/update":
+            break;
+        case "snaicards/list":
+            break;
+        case "snaicards/create":
+            break;
+        case "snaicards/delete":
+            break;
+        case "snaicards/update":
+            break;
+        case "descriptors/list":
+            break;
+        case "descriptors/create":
+            break;
+        case "descriptors/delete":
+            break;
+        case "descriptors/update":
+            break; 
+        case "descriptorRecords/list":
+            break;
+        case "descriptorRecords/create":
+            break;
+        case "descriptorRecords/delete":
+            break;
+        case "descriptorRecords/update":
+            break;  
     }
 } catch (Exception $e) {
     Reply::error(get_class($e) . " : " . $e->getMessage());

@@ -25,16 +25,17 @@ class SNAICard implements CRUDL, ASerializable
         $this->bettedProfsId = new IdFieldList($this->database, new Professor($this->pdo, $this->loggedInUser, null));
         $this->bettedProfsId->loadString($r["bettedProfsId"]);
     }
-    public function list(): array
+    public function list($preserialize = true): array
     {
-        $q = $this->database->prepare("SELECT * FROM SNAICards");
+        $q = $this->database->prepare("SELECT id FROM SNAICards");
         $q->execute();
         $re = $q->fetchAll(PDO::FETCH_ASSOC);
         $final = [];
         foreach ($re as $result) {
             $u = new SNAICard($this->database, $this->loggedInUser);
-            $u->deserialize($result);
-            $final[] = $u;
+            $u->deserialize((int) $result["id"]);
+            if(!$preserialize) $final[] = $u;
+            else $final[] = $u->serialize();
         }
         return $final;
     }

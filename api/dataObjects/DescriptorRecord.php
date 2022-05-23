@@ -27,16 +27,17 @@ class DescriptorRecord implements CRUDL, ASerializable
         $this->instant = (int) $r["instant"];
         $this->comment = (string) $r["comment"];
     }
-    public function list(): array
+    public function list($preserialize = true): array
     {
-        $q = $this->database->prepare("SELECT * FROM DescriptorRecords");
+        $q = $this->database->prepare("SELECT id FROM DescriptorRecords");
         $q->execute();
         $re = $q->fetchAll(PDO::FETCH_ASSOC);
         $final = [];
         foreach ($re as $result) {
-            $u = new Descriptor($this->database, $this->loggedInUser);
-            $u->deserialize($result);
-            $final[] = $u;
+            $u = new DescriptorRecord($this->database, $this->loggedInUser);
+            $u->deserialize((int) $result["id"]);
+            if(!$preserialize) $final[] = $u;
+            else $final[] = $u->serialize();
         }
         return $final;
     }

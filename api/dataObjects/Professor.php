@@ -26,22 +26,22 @@ class Professor implements CRUDL, ASerializable//check
         $this->lastEdit = (int) $r["lastEdit"];
 
     }
-    public function list(): array
+    public function list($preserialize = true): array
     {
-        $q = $this->database->prepare("SELECT * FROM Professors");
+        $q = $this->database->prepare("SELECT id FROM Professors");
         $q->execute();
         $re = $q->fetchAll(PDO::FETCH_ASSOC);
         $final = [];
         foreach ($re as $result) {
             $u = new Professor($this->database, $this->loggedInUser);
-            $u->deserialize($result);
-            $final[] = $u;
+            $u->deserialize((int) $result["id"]);
+            if(!$preserialize) $final[] = $u;
+            else $final[] = $u->serialize();
         }
         return $final;
     }
     public function delete(): void
     {
-        if ($this->loggedInUser->getUser()->getId() != $this->id) throw new UnauthorizedException();
         $p = $this->database->prepare("DELETE FROM Professors WHERE id = :id");
         $p->execute([":id" => $this->id]);
         //cascade delete descriptor from all games and snaicards
@@ -89,7 +89,8 @@ class Professor implements CRUDL, ASerializable//check
     }
     public function deserialize(array $r): void
     {
-        
+        $this->name = (string) $r["name"];
+        $this->surname = (string) $r["surname"];
     }
     public function serialize(): array
     {

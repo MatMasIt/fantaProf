@@ -32,16 +32,17 @@ class Game implements CRUDL, ASerializable
         $this->descriptorIds = new IdFieldList($this->database, new Descriptor($this->pdo, $this->loggedInUser, null));
         $this->professorIds->loadString($r["descriptorIds"]);
     }
-    public function list(): array
+    public function list($preserialize = true): array
     {
-        $q = $this->database->prepare("SELECT * FROM Games");
+        $q = $this->database->prepare("SELECT id FROM Games");
         $q->execute();
         $re = $q->fetchAll(PDO::FETCH_ASSOC);
         $final = [];
         foreach ($re as $result) {
             $u = new Game($this->database, $this->loggedInUser);
-            $u->deserialize($result);
-            $final[] = $u;
+            $u->deserialize((int) $result["id"]);
+            if(!$preserialize) $final[] = $u;
+            else $final[] = $u->serialize();
         }
         return $final;
     }

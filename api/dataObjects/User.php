@@ -35,16 +35,17 @@ class User implements CRUDL, ASerializable
         $this->created = $r["created"];
         $this->lastEdit = $r["lastEdit"];
     }
-    public function list(): array
+    public function list($preserialize = true): array
     {
-        $q = $this->database->prepare("SELECT * FROM Users");
+        $q = $this->database->prepare("SELECT id FROM Users");
         $q->execute();
         $re = $q->fetchAll(PDO::FETCH_ASSOC);
         $final = [];
         foreach ($re as $result) {
             $u = new User($this->database, $this->loggedInUser);
-            $u->deserialize($result);
-            $final[] = $u;
+            $u->deserialize((int) $result["id"]);
+            if(!$preserialize) $final[] = $u;
+            else $final[] = $u->serialize();
         }
         return $final;
     }
@@ -79,7 +80,7 @@ class User implements CRUDL, ASerializable
         $this->id = $this->database->lastInsertId();
     }
 
-    public function deserialize(array $r): void
+    public function deserialize(array $r, $database = false): void
     {
         $this->username = $r["username"];
         $this->name = $r["name"];
