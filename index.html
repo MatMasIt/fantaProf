@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="it">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>FantaProf</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <meta name="title" content="FantaProf">
+    <meta name="description"
+        content="Il rivoluzionario videogioco online per celebrare la millenaria tradizione scolastica della penisola italica, nella sua nuova veste moderna e digitale. Grandi avventure e sanzioni pecuniarie aspettano giocatori e Game Masters.">
+    <meta name="keywords"
+        content="sesso, fantaprof, professori, scuola, dubliners, cagone, anna mao, silvio berlusconi">
+    <meta name="author" content="Mattia Mascarello, Diego Scanavino, Giacomo Roggero">
+    <meta name="copyright" content="2022, Istituto Lvce">
+    <meta http-equiv="Reply-to" content="anna.mao@liceococito.it">
+    <meta http-equiv="content-language" content="IT">
+    <meta http-equiv="Content-Type" content="text/html; utf-8">
+    <meta name="robots" content="INDEX,NOFOLLOW">
+    <meta name="creation_Date" content="05/24/2022">
+    <meta name="revisit-after" content="7 days">
+</head>
+
+<body>
+    <h1>FantaProf</h1>
+    <div data-view="user-create">
+        <h2>Create user</h2>
+        <form>
+            <input type="text" name="username" placeholder="Username">
+            <input type="text" name="name" placeholder="Name">
+            <input type="text" name="surname" placeholder="Surname">
+            <input type="email" name="email" placeholder="Email">
+            <input type="text" name="classe" placeholder="Classe">
+            <input type="password" name="password" placeholder="Password">
+            <input type="text" name="imgUrl" placeholder="Image Url">
+            <input type="submit" value="Sign Up">
+        </form>
+    </div>
+    <div data-view="user-login">
+        <h2>User login</h2>
+        <form>
+            <input type="text" name="username" placeholder="Username"> or <input type="email" name="email"
+                placeholder="Email">
+            <input type="password" name="password" placeholder="Password">
+            <input type="submit" value="Sign In">
+        </form>
+    </div>
+    <div data-view="user-get"></div>
+    <div data-view="user-update">
+        <h2>Update user</h2>
+        <form>
+            <input type="text" name="username" placeholder="Username">
+            <input type="text" name="name" placeholder="Name">
+            <input type="text" name="surname" placeholder="Surname">
+            <input type="email" name="email" placeholder="Email">
+            <input type="text" name="classe" placeholder="Classe">
+            <input type="password" name="password" placeholder="Password">
+            <input type="text" name="imgUrl" placeholder="Image Url">
+            <input type="submit" value="Save">
+        </form>
+    </div>
+    <div data-view="user-delete">
+        <h2>Delete user</h2>
+    </div>
+    <div data-view="user-list">
+        <h2>List of users</h2>
+    </div>
+
+    <div data-view="game-create">
+        <h2>Create game</h2>
+        <form>
+            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="description" placeholder="Description">
+            <input type="number" name="maxBettableProfs" placeholder="Max number of bettable professors">
+            <input type="datetime" name="start" placeholder="Start">
+            <input type="datetime" name="end" placeholder="End">
+            <input type="text" name="professorIds" placeholder="ProfessorIds">
+            <input type="text" name="descriptorIds" placeholder="DescriptorIds">
+            <input type="submit" value="Create">
+        </form>
+    </div>
+    <div data-view="game-get"></div>
+    <div data-view="game-update">
+        <h2>Update game</h2>
+        <form>
+            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="description" placeholder="Description">
+            <input type="number" name="maxBettableProfs" placeholder="Max number of bettable professors">
+            <input type="datetime" name="start" placeholder="Start">
+            <input type="datetime" name="end" placeholder="End">
+            <input type="text" name="professorIds" placeholder="ProfessorIds">
+            <input type="text" name="descriptorIds" placeholder="DescriptorIds">
+            <input type="submit" value="Save">
+        </form>
+    </div>
+    <div data-view="game-delete">
+        <h2>Delete game</h2>
+    </div>
+    <div data-view="game-list">
+        <h2>List of games</h2>
+    </div>
+
+    <div data-view="professor-create">
+        <h2>Create professor</h2>
+        <form>
+            <input type="text" name="name" placeholder="Name">
+            <input type="text" name="surname" placeholder="Surname">
+            <input type="text" name="photoUrl" placeholder="PhotoUrl">
+            <input type="text" name="comment" placeholder="Comment">
+            <input type="submit" value="Create">
+        </form>
+    </div>
+    <div data-view="professor-get"></div>
+    <div data-view="professor-update">
+        <h2>Update professor</h2>
+        <form>
+            <input type="text" name="gameId" placeholder="GameId">
+            <input type="text" name="userID" placeholder="UserId">
+            <input type="text" name="bettedProfsId" placeholder="BettedProfsId">
+            <input type="submit" value="Save">
+        </form>
+    </div>
+    <div data-view="professor-delete">
+        <h2>Delete professor</h2>
+    </div>
+    <div data-view="professor-list">
+        <h2>List of professors</h2>
+    </div>
+
+    <div data-view="descriptor-create">
+        <h2>Create descriptor</h2>
+        <form>
+            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="description" placeholder="Description">
+            <input type="number" name="delta" placeholder="Delta">
+            <input type="submit" value="Create">
+        </form>
+    </div>
+    <div data-view="descriptor-get"></div>
+    <div data-view="descriptor-update">
+        <h2>Update descriptor</h2>
+        <form>
+            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="description" placeholder="Description">
+            <input type="number" name="delta" placeholder="Delta">
+            <input type="submit" value="Save">
+        </form>
+    </div>
+    <div data-view="descriptor-delete">
+        <h2>Delete descriptor</h2>
+    </div>
+    <div data-view="descriptor-list">
+        <h2>List of descriptors</h2>
+    </div>
+
+    <div data-view="descriptorRecord-create">
+        <h2>Create descriptor record</h2>
+        <input type="text" name="username" placeholder="Username">
+        <input type="text" name="name" placeholder="Name">
+        <input type="text" name="surname" placeholder="Surname">
+        <input type="email" name="email" placeholder="Email">
+        <input type="text" name="classe" placeholder="Classe">
+        <input type="password" name="password" placeholder="Password"> <input type="text" name="imgUrl"
+            placeholder="Image Url">
+        <input type="submit" value="Sign Up">
+    </div>
+    <div data-view="descriptorRecord-get"></div>
+    <div data-view="descriptorRecord-update">
+        <h2>Update descriptor record
+        </h2>
+    </div>
+    <div data-view="descriptorRecord-delete">
+        <h2>Delete descriptor record</h2>
+    </div>
+    <div data-view="descriporRecord-list">
+        <h2>Delete descriptor records</h2>
+    </div>
+
+
+    <div data-view="snaicard-create">
+
+    </div>
+    <div data-view="snaicard-get">
+
+        <h2>Create Game Card</h2>
+    </div>
+    <div data-view="snaicard-update">
+        <h2>Update Game Card</h2>
+    </div>
+    <div data-view="snaicard-delete">
+        <h2>Delete Game Card</h2>
+    </div>
+    <div data-view="snaicard-list">
+        <h2>List of Game Cards</h2>
+    </div>
+
+
+
+    <script src="script.js">
+    </script>
+</body>
+
+</html>
