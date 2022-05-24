@@ -114,9 +114,10 @@
     <div data-view="professor-update">
         <h2>Update professor</h2>
         <form>
-            <input type="text" name="gameId" placeholder="GameId">
-            <input type="text" name="userID" placeholder="UserId">
-            <input type="text" name="bettedProfsId" placeholder="BettedProfsId">
+            <input type="text" name="name" placeholder="Name">
+            <input type="text" name="surname" placeholder="Surname">
+            <input type="text" name="photoUrl" placeholder="PhotoUrl">
+            <input type="text" name="comment" placeholder="Comment">
             <input type="submit" value="Save">
         </form>
     </div>
@@ -155,37 +156,58 @@
 
     <div data-view="descriptorRecord-create">
         <h2>Create descriptor record</h2>
-        <input type="text" name="username" placeholder="Username">
-        <input type="text" name="name" placeholder="Name">
-        <input type="text" name="surname" placeholder="Surname">
-        <input type="email" name="email" placeholder="Email">
-        <input type="text" name="classe" placeholder="Classe">
-        <input type="password" name="password" placeholder="Password"> <input type="text" name="imgUrl"
-            placeholder="Image Url">
-        <input type="submit" value="Sign Up">
+        <form>
+            <input type="text" name="SNAICardId" placeholder="SNAICardId">
+            <input type="text" name="profId" placeholder="profId">
+            <input type="text" name="descriptorId" placeholder="descriptorId">
+            <input type="text" name="instant" placeholder="Instant">
+            <input type="text" name="comment" placeholder="Comment">
+            <input type="submit" value="Create">
+        </form>
     </div>
     <div data-view="descriptorRecord-get"></div>
     <div data-view="descriptorRecord-update">
         <h2>Update descriptor record
         </h2>
+        <form>
+            <input type="text" name="SNAICardId" placeholder="SNAICardId">
+            <input type="text" name="profId" placeholder="profId">
+            <input type="text" name="descriptorId" placeholder="descriptorId">
+            <input type="text" name="instant" placeholder="Instant">
+            <input type="text" name="comment" placeholder="Comment">
+            <input type="submit" value="Save">
+        </form>
     </div>
     <div data-view="descriptorRecord-delete">
         <h2>Delete descriptor record</h2>
     </div>
     <div data-view="descriporRecord-list">
-        <h2>Delete descriptor records</h2>
+        <h2>List of descriptor records</h2>
     </div>
 
 
     <div data-view="snaicard-create">
+        <h2>Create Game Card</h2>
+        <form>
+            <input type="text" name="gameId" placeholder="GameId">
+            <input type="text" name="userID" placeholder="UserId">
+            <input type="text" name="bettedProfsId" placeholder="BettedProfsId">
+            <input type="submit" value="Create">
+        </form>
 
     </div>
     <div data-view="snaicard-get">
 
-        <h2>Create Game Card</h2>
+        <h2>Get Game Card</h2>
     </div>
     <div data-view="snaicard-update">
         <h2>Update Game Card</h2>
+        <form>
+            <input type="text" name="gameId" placeholder="GameId">
+            <input type="text" name="userID" placeholder="UserId">
+            <input type="text" name="bettedProfsId" placeholder="BettedProfsId">
+            <input type="submit" value="Save">
+        </form>
     </div>
     <div data-view="snaicard-delete">
         <h2>Delete Game Card</h2>
