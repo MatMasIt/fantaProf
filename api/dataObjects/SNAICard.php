@@ -66,8 +66,6 @@ class SNAICard implements CRUDL, ASerializable
         $q = $this->database->prepare("INSERT INTO SNAICard(gameId, userId, bettedProfsId) VALUES(:gameId, :userId, :bettedProfsId)");
         $this->created = time();
         $this->lastEdit = $this->created;
-        $this->bettedProfsId = new IdFieldList($this->database, new Professor($this->database, $this->loggedInUser));
-        $this->bettedProfsId->setList($data["professors"]);
         $q->execute([
             ":gameId" => $this->gameId,
             ":userId" => $this->userId,
@@ -82,6 +80,9 @@ class SNAICard implements CRUDL, ASerializable
 
         $this->gameId = (int) $r["gameId"];
         $this->userId = (int) $r["userId"];
+        $this->bettedProfsId = new IdFieldList($this->database, new Professor($this->database, $this->loggedInUser));
+        $this->bettedProfsId->setList($data["professors"]);
+        $this->forceMaxProfConstraint();
     }
     public function serialize(): array
     {
@@ -115,5 +116,14 @@ class SNAICard implements CRUDL, ASerializable
     public function getId()
     {
         return $this->id;
+    }
+
+    private function forceMaxProfConstraint(): void
+    {
+        $game = new Game($this->database, $this->loggedInUser);
+        if($this->bettedProfsId->size() > $game->getMaxBettableProfs()){
+            $a = $this->bettedProfsId->getList();
+            $this->bettedProfsId->setList(array_slice($a,0,$game->getMaxBettableProfs));
+        }
     }
 }

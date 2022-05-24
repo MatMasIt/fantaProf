@@ -1,5 +1,4 @@
-
-class Professor {
+class Professor{
     constructor(successCallback, failCallback, user) {
         this.successCallback = successCallback;
         this.failCallback = failCallback;
@@ -8,21 +7,29 @@ class Professor {
         this.api = new Api("./api");
         this.namespace = "professors";
     }
-    create() {
+    create(name, surname, photoUrl, comment) {
         if (!this.user.authed) {
             this.failCallback([]);
             return false;
         }
-        //TODO implement
+        this.api.send({
+            'action': this.namespace + "/create",
+            'name': name,
+            'surname': surname,
+            'photoUrl': photoUrl,
+            'comment': comment,
+            'token': this.storedData["token"]
+        }, function process(data) {
+            this.get(data["id"]);
+        }, this.failCallback);
     }
     get(id) {
         this.api.send({
-            'action': "users/get",
+            'action': this.namespace + "/get",
             'id': id,
             'token': this.storedData["token"]
         }, function process(data) {
             this.storedData = data;
-            this.authed = true;
             this.successCallback(data);
         }, this.failCallback);
 
@@ -38,7 +45,7 @@ class Professor {
         a["token"] = this.user.storedData["token"];
         a["action"] = this.namespace + "/update";
         this.api.send(a, function ok(a) {
-            this.getMe();
+            this.get(a["id"]);
             this.successCallback(a);
         }, this.failCallback);
     }

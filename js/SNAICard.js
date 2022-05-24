@@ -1,5 +1,4 @@
-
-class SNAICard {
+class SNAICard{
     constructor(successCallback, failCallback, user) {
         this.successCallback = successCallback;
         this.failCallback = failCallback;
@@ -8,21 +7,28 @@ class SNAICard {
         this.api = new Api("./api");
         this.namespace = "snaicards";
     }
-    create() {
+    create(gameId, userId, bettedProfsId) {
         if (!this.user.authed) {
             this.failCallback([]);
             return false;
         }
-        //TODO implement
+        this.api.send({
+            'action': this.namespace + "/create",
+            'gameId': gameId,
+            'userId': userId,
+            'bettedProfsId': bettedProfsId,
+            'token': this.storedData["token"]
+        }, function process(data) {
+            this.get(data["id"]);
+        }, this.failCallback);
     }
     get(id) {
         this.api.send({
-            'action': "users/get",
+            'action': this.namespace + "/get",
             'id': id,
             'token': this.storedData["token"]
         }, function process(data) {
             this.storedData = data;
-            this.authed = true;
             this.successCallback(data);
         }, this.failCallback);
 
@@ -38,7 +44,7 @@ class SNAICard {
         a["token"] = this.user.storedData["token"];
         a["action"] = this.namespace + "/update";
         this.api.send(a, function ok(a) {
-            this.getMe();
+            this.get(a["id"]);
             this.successCallback(a);
         }, this.failCallback);
     }

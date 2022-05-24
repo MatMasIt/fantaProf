@@ -1,4 +1,3 @@
-
 class DescriptorRecord {
     constructor(successCallback, failCallback, user) {
         this.successCallback = successCallback;
@@ -8,21 +7,30 @@ class DescriptorRecord {
         this.api = new Api("./api");
         this.namespace = "descriptorRecords";
     }
-    create() {
+    create(title, SNAICardId, profId, descriptorId, instant, comment) {
         if (!this.user.authed) {
             this.failCallback([]);
             return false;
         }
-        //TODO implement
+        this.api.send({
+            'action': this.namespace + "/create",
+            'SNAICardId': SNAICardId,
+            'profId': profId,
+            'descriptorId': descriptorId,
+            'instant': instant,
+            'comment': comment,
+            'token': this.storedData["token"]
+        }, function process(data) {
+            this.get(data["id"]);
+        }, this.failCallback);
     }
     get(id) {
         this.api.send({
-            'action': "users/get",
+            'action': this.namespace + "/get",
             'id': id,
             'token': this.storedData["token"]
         }, function process(data) {
             this.storedData = data;
-            this.authed = true;
             this.successCallback(data);
         }, this.failCallback);
 
@@ -38,7 +46,7 @@ class DescriptorRecord {
         a["token"] = this.user.storedData["token"];
         a["action"] = this.namespace + "/update";
         this.api.send(a, function ok(a) {
-            this.getMe();
+            this.get(a["id"]);
             this.successCallback(a);
         }, this.failCallback);
     }
@@ -54,4 +62,3 @@ class DescriptorRecord {
 
     }
 }
-

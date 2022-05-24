@@ -1,4 +1,3 @@
-
 class Descriptor {
     constructor(successCallback, failCallback, user) {
         this.successCallback = successCallback;
@@ -8,21 +7,28 @@ class Descriptor {
         this.api = new Api("./api");
         this.namespace = "descriptors";
     }
-    create() {
+    create(title, description, delta) {
         if (!this.user.authed) {
             this.failCallback([]);
             return false;
         }
-        //TODO implement
+        this.api.send({
+            'action': this.namespace + "/create",
+            'title': title,
+            'description': description,
+            'delta': delta,
+            'token': this.storedData["token"]
+        }, function process(data) {
+            this.get(data["id"]);
+        }, this.failCallback);
     }
     get(id) {
         this.api.send({
-            'action': "users/get",
+            'action': this.namespace + "/get",
             'id': id,
             'token': this.storedData["token"]
         }, function process(data) {
             this.storedData = data;
-            this.authed = true;
             this.successCallback(data);
         }, this.failCallback);
 
@@ -38,7 +44,7 @@ class Descriptor {
         a["token"] = this.user.storedData["token"];
         a["action"] = this.namespace + "/update";
         this.api.send(a, function ok(a) {
-            this.getMe();
+            this.get(a["id"]);
             this.successCallback(a);
         }, this.failCallback);
     }
@@ -54,4 +60,3 @@ class Descriptor {
 
     }
 }
-
