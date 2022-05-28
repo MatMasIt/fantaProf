@@ -1,4 +1,4 @@
-class SNAICard{
+class SNAICard {
     constructor(successCallback, failCallback, user) {
         this.successCallback = successCallback;
         this.failCallback = failCallback;
