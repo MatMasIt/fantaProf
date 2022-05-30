@@ -1,15 +1,15 @@
 class DescriptorRecord {
-    constructor(successCallback, failCallback, user) {
-        this.successCallback = successCallback;
-        this.failCallback = failCallback;
+    constructor(api, onSuccess, onFail, user) {
+        this.onSuccess = onSuccess;
+        this.onFail = onFail;
         this.storedData = {};
         this.user = user;
-        this.api = new Api("./api");
+        this.api = api;
         this.namespace = "descriptorRecords";
     }
     create(title, SNAICardId, profId, descriptorId, instant, comment) {
         if (!this.user.authed) {
-            this.failCallback([]);
+            this.onFail([]);
             return false;
         }
         this.api.send({
@@ -19,27 +19,28 @@ class DescriptorRecord {
             'descriptorId': descriptorId,
             'instant': instant,
             'comment': comment,
-            'token': this.storedData["token"]
+            'token': this.user.storedData["token"]
         }, function process(data) {
             this.get(data["id"]);
-        }, this.failCallback);
+        }.bind(this), this.onFail);
     }
     get(id) {
         this.api.send({
             'action': this.namespace + "/get",
             'id': id,
-            'token': this.storedData["token"]
+            'token': this.user.storedData["token"]
         }, function process(data) {
             this.storedData = data;
-            this.successCallback(data);
-        }, this.failCallback);
+            this.onSuccess(data);
+        }.bind(this), this.onFail);
 
     }
     delete() {
         this.api.send({
             "action": this.namespace + "/delete",
-            "token": this.user.storedData["token"]
-        }, this.successCallback, this.failCallback);
+            "token": this.user.storedData["token"],
+            "id": this.storedData["id"]
+        }, this.onSuccess, this.onFail);
     }
     update() {
         let a = objCopy(this.storedData);
@@ -47,18 +48,18 @@ class DescriptorRecord {
         a["action"] = this.namespace + "/update";
         this.api.send(a, function ok(a) {
             this.get(a["id"]);
-            this.successCallback(a);
-        }, this.failCallback);
+            this.onSuccess(a);
+        }.bind(this), this.onFail);
     }
     list() {
         if (!this.user.authed) {
-            this.failCallback([]);
+            this.onFail([]);
             return false;
         }
         this.api.send({
             'action': this.namespace + "/list",
             'token': this.user.storedData["token"]
-        }, this.successCallback, this.failCallback);
+        }, this.onSuccess, this.onFail);
 
     }
 }

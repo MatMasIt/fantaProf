@@ -4,23 +4,28 @@ function objCopy(obj) {
 
 class Api {
     constructor(path) {
-        this.path = path
+        this.path = path;
+        this.onError = function () { };
     }
-    send(data, successCallback, failCallback) {
+    send(data, onSuccess, onFail) {
 
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", this.path);
+        xhr.open("POST", this.path);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 let received = JSON.parse(xhr.responseText);
-                if (received["ok"]) successCallback(received["data"]);
-                else failCallback(received["data"]);
+                if (received["ok"]) onSuccess(received["data"]);
+                else onFail(received["data"]);
 
             }
         };
+        try {
 
-        xhr.send(data);
+            xhr.send(JSON.stringify(data));
+        } catch (e) {
+            this.onError(e);
+        }
     }
 }
 

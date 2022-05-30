@@ -1,31 +1,35 @@
-function fadeOut(el){
-    el.style.opacity=1;
-    (function fade(){
-        if((el.style.opacity-=.1)<0){
-            el.style.display="none";
-        }else{
-            requestAnimationFrame(fade);
-        }
-    })();
-}
-function fadeIn(el){
-    el.style.opacity=0;
-    el.style.display="block";
-    (function fade(){
-        if((el.style.opacity+=.1)>1){
-            requestAnimationFrame(fade);
-        }
-    })();
-}
-var lastViewId = null;
-function setView(viewId){
-    if(lastView) document.querySelector("[data-view="+lastViewId+"]").style.display = "none";
-    document.querySelector("[data-view="+viewId+"]").style.display="block";
-    lastView = viewId;
 
+function setView(viewId) {
+    document.querySelectorAll("[data-view]").forEach(function hide(element) {
+        element.style.display = "none";
+    })
+    document.querySelector("[data-view=" + viewId + "]").style.display = "block";
+    lastView = viewId;
+    location.hash = viewId;
 }
-function fadeView(viewId){
-    if(lastView) fadeOut(document.querySelector("[data-view="+lastViewId+"]"));
-    fadeIn(document.querySelector("[data-view="+viewId+"]"));
-    lastViewId = viewId;
+function serializeForm(form) {
+    var obj = {};
+    var formData = new FormData(form);
+    for (var key of formData.keys()) {
+        obj[key] = formData.get(key);
+    }
+    return obj;
+}
+function getFormFromView(viewId) {
+    return document.querySelector("[data-view=" + viewId + "]>form");
+}
+function formListen(viewId, callback) {
+    getFormFromView(viewId).addEventListener("submit", function (e) {
+        e.preventDefault();
+        callback(serializeForm(getFormFromView(viewId)));
+        return false;
+    })
+}
+
+function setText(view, element, text, raw) {
+    if (raw) document.getElementById(view + "-" + element).innerHTML = text;
+    else document.getElementById(view + "-" + element).innerText = text;
+}
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
 }

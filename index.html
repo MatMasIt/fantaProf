@@ -19,12 +19,23 @@
     <meta name="robots" content="INDEX,NOFOLLOW">
     <meta name="creation_Date" content="05/24/2022">
     <meta name="revisit-after" content="7 days">
+    <!-- Alertify -->
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
 </head>
 
 <body>
     <h1>FantaProf</h1>
     <div data-view="user-create">
-        <h2>Create user</h2>
+        <h2>User Sign up</h2>
         <form>
             <input type="text" name="username" placeholder="Username">
             <input type="text" name="name" placeholder="Name">
@@ -34,16 +45,46 @@
             <input type="password" name="password" placeholder="Password">
             <input type="text" name="imgUrl" placeholder="Image Url">
             <input type="submit" value="Sign Up">
+            Or <a href="javascript:setView('user-login');">Sign In</a>
         </form>
     </div>
     <div data-view="user-login">
-        <h2>User login</h2>
+        <h2>User Sign in</h2>
         <form>
-            <input type="text" name="username" placeholder="Username"> or <input type="email" name="email"
-                placeholder="Email">
+            <input type="text" name="username" placeholder="Username" id="user-login-username"> or <input type="email"
+                name="email" placeholder="Email" id="user-login-email">
             <input type="password" name="password" placeholder="Password">
             <input type="submit" value="Sign In">
+            Or <a href="javascript:setView('user-create');">Sign Up</a>
         </form>
+    </div>
+    <div data-view="user-home">
+        <table style="margin:auto">
+            <tr>
+                <th>Tabula Picta</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Classe</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>
+                    <img src="" id="user-home-image" style="width:200px">
+                </td>
+                <td id="user-home-username"></td>
+                <td id="user-home-email"></td>
+                <td id="user-home-name"></td>
+                <td id="user-home-surname"></td>
+                <td id="user-home-classe"></td>
+                <td><button id="user-home-edit">Edit my profile</button></td>
+            </tr>
+        </table>
+        <button id="user-home-users">Users</button>
+        <button id="user-home-games">Games</button>
+        <button id="user-home-professors">Professors</button>
+        <button id="user-home-descriptors">Descriptors</button>
     </div>
     <div data-view="user-get"></div>
     <div data-view="user-update">
@@ -54,16 +95,20 @@
             <input type="text" name="surname" placeholder="Surname">
             <input type="email" name="email" placeholder="Email">
             <input type="text" name="classe" placeholder="Classe">
-            <input type="password" name="password" placeholder="Password">
             <input type="text" name="imgUrl" placeholder="Image Url">
             <input type="submit" value="Save">
         </form>
+
+        <button onclick="setView('user-home');">Back</button>
     </div>
     <div data-view="user-delete">
         <h2>Delete user</h2>
     </div>
     <div data-view="user-list">
         <h2>List of users</h2>
+        <table style="margin:auto" id="user-list-table">
+        </table>
+        <button onclick="setView('user-home');">Back</button>
     </div>
 
     <div data-view="game-create">
@@ -98,6 +143,10 @@
     </div>
     <div data-view="game-list">
         <h2>List of games</h2>
+
+        <table style="margin:auto" id="game-list-table">
+        </table>
+        <button onclick="setView('user-home');">Back</button>
     </div>
 
     <div data-view="professor-create">
@@ -105,10 +154,11 @@
         <form>
             <input type="text" name="name" placeholder="Name">
             <input type="text" name="surname" placeholder="Surname">
-            <input type="text" name="photoUrl" placeholder="PhotoUrl">
+            <input type="text" name="photoUrl" placeholder="Photo Url">
             <input type="text" name="comment" placeholder="Comment">
             <input type="submit" value="Create">
         </form>
+        <button onclick="ProfessorListView();">Back</button>
     </div>
     <div data-view="professor-get"></div>
     <div data-view="professor-update">
@@ -116,16 +166,21 @@
         <form>
             <input type="text" name="name" placeholder="Name">
             <input type="text" name="surname" placeholder="Surname">
-            <input type="text" name="photoUrl" placeholder="PhotoUrl">
+            <input type="text" name="photoUrl" placeholder="Photo Url">
             <input type="text" name="comment" placeholder="Comment">
             <input type="submit" value="Save">
         </form>
+        <button onclick="ProfessorListView();">Back</button>
     </div>
     <div data-view="professor-delete">
         <h2>Delete professor</h2>
     </div>
     <div data-view="professor-list">
         <h2>List of professors</h2>
+        <table style="margin:auto" id="professor-list-table">
+        </table>
+        <button onclick="setView('user-home');">Back</button>
+        <button onclick="setView('professor-create');">Create</button>
     </div>
 
     <div data-view="descriptor-create">
@@ -146,12 +201,15 @@
             <input type="number" name="delta" placeholder="Delta">
             <input type="submit" value="Save">
         </form>
+        <button onclick="setView('user-home');">Back</button>
     </div>
     <div data-view="descriptor-delete">
         <h2>Delete descriptor</h2>
     </div>
     <div data-view="descriptor-list">
         <h2>List of descriptors</h2>
+        <table style="margin:auto" id="descriptor-list-table">
+        </table>
     </div>
 
     <div data-view="descriptorRecord-create">
@@ -187,7 +245,7 @@
 
 
     <div data-view="snaicard-create">
-        <h2>Create Game Card</h2>
+        <h2>Create Game Card</h2>user-
         <form>
             <input type="text" name="gameId" placeholder="GameId">
             <input type="text" name="userID" placeholder="UserId">
@@ -216,9 +274,13 @@
         <h2>List of Game Cards</h2>
     </div>
 
-
-
-    <script src="script.js">
+    <script src="js/api.js"></script>
+    <script src="js/User.js"></script>
+    <script src="js/Professor.js"></script>
+    <script src="js/Descriptor.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/ViewController.js"></script>
+    <script src="main.js">
     </script>
 </body>
 

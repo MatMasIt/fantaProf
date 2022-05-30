@@ -76,8 +76,7 @@ class Professor implements CRUDL, ASerializable //check
     public function create(array $data): void
     {
         $this->deserialize($data);
-        $hash = password_hash($data["password"], PASSWORD_DEFAULT);
-        $q = $this->database->prepare("INSERT INTO Professor(name, surname, photoUrl, comment, lastEdit, created) VALUES( :name, :surname, :photoUrl, :comment, :lastEdit, :created)");
+        $q = $this->database->prepare("INSERT INTO Professors(name, surname, photoUrl, comment, lastEdit, created) VALUES( :name, :surname, :photoUrl, :comment, :lastEdit, :created)");
         $this->created = time();
         $this->lastEdit = $this->created;
         $q->execute([ //check
@@ -86,8 +85,7 @@ class Professor implements CRUDL, ASerializable //check
             ":lastEdit" => $this->lastEdit,
             ":photoUrl" => $this->photoUrl,
             ":comment" => $this-> comment,
-            ":created" => $this->created,
-            ":id" => $this->id
+            ":created" => $this->created
         ]);
         $this->id = $this->database->lastInsertId();
     }

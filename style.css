@@ -2,6 +2,13 @@ html,
 body {
   height: 100%;
   width: 100%;
+  background: rgb(176, 11, 105);
+  background: linear-gradient(rgba(176, 11, 105, 1) 0%, rgba(165, 94, 167, 1) 40%, rgba(28, 46, 201, 1) 70%);
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 [data-view] {
@@ -16,15 +23,40 @@ body {
 }
 
 h1 {
-  padding: 70px 0;
-  color: #333;
-  font-size: 3em;
+  padding: 20px 0;
+  color: wheat;
+  font-style: italic;
+  font-size: 5em;
   font-weight: 200;
 }
 
+h2 {
+  padding: 20px 0;
+  color: rgb(234, 223, 202);
+  font-style: bold;
+  font-size: 2em;
+  font-weight: 200;
+}
+
+button,
+input[type=submit] {
+  background-color: #f8f8f8;
+  /* Green */
+  border: 2px solid #ccc;
+  color: black;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+
 div {
   width: 100%;
-  height: 100vh;
   padding: 10px;
   color: #fff;
   font-size: 1.25em;
@@ -47,4 +79,27 @@ p {
   width: 65%;
   margin-top: 15%;
   font-weight: 300;
+}
+
+input:not([type=submit], [type=hidden]) {
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+  display: block;
+  margin: auto;
+}
+
+a[href] {
+  color: aqua;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
 }
