@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
     <!-- Bootstrap theme -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
+
+
 </head>
 
 <body>
@@ -117,12 +119,18 @@
             <input type="text" name="title" placeholder="Title">
             <input type="text" name="description" placeholder="Description">
             <input type="number" name="maxBettableProfs" placeholder="Max number of bettable professors">
-            <input type="datetime" name="start" placeholder="Start">
-            <input type="datetime" name="end" placeholder="End">
-            <input type="text" name="professorIds" placeholder="ProfessorIds">
-            <input type="text" name="descriptorIds" placeholder="DescriptorIds">
+            <label>Start</label><br />
+            <input type="datetime-local" name="start">
+            <label>End</label><br />
+            <input type="datetime-local" name="end">
+            <label>Professors</label><br />
+            <div class="selectorBox" id="game-create-prof-box"></div>
+            <label>Descriptors</label><br />
+            <div class="selectorBox" id="game-create-descriptor-box"></div>
             <input type="submit" value="Create">
         </form>
+
+        <button onclick="setView('game-list');">Back</button>
     </div>
     <div data-view="game-get"></div>
     <div data-view="game-update">
@@ -131,12 +139,18 @@
             <input type="text" name="title" placeholder="Title">
             <input type="text" name="description" placeholder="Description">
             <input type="number" name="maxBettableProfs" placeholder="Max number of bettable professors">
-            <input type="datetime" name="start" placeholder="Start">
-            <input type="datetime" name="end" placeholder="End">
-            <input type="text" name="professorIds" placeholder="ProfessorIds">
-            <input type="text" name="descriptorIds" placeholder="DescriptorIds">
+            <label>Start</label><br />
+            <input type="datetime-local" name="start">
+            <label>End</label><br />
+            <input type="datetime-local" name="end">
+            <label>Professors</label><br />
+            <div class="selectorBox" id="game-update-prof-box"></div>
+            <label>Descriptors</label><br />
+            <div class="selectorBox" id="game-update-descriptor-box"></div>
             <input type="submit" value="Save">
         </form>
+
+        <button onclick="setView('game-list');">Back</button>
     </div>
     <div data-view="game-delete">
         <h2>Delete game</h2>
@@ -147,6 +161,7 @@
         <table style="margin:auto" id="game-list-table">
         </table>
         <button onclick="setView('user-home');">Back</button>
+        <button onclick="prepareGameCreate();">Create</button>
     </div>
 
     <div data-view="professor-create">
@@ -191,6 +206,7 @@
             <input type="number" name="delta" placeholder="Delta">
             <input type="submit" value="Create">
         </form>
+        <button onclick="DescriptorListView();">Back</button>
     </div>
     <div data-view="descriptor-get"></div>
     <div data-view="descriptor-update">
@@ -210,27 +226,26 @@
         <h2>List of descriptors</h2>
         <table style="margin:auto" id="descriptor-list-table">
         </table>
+        <button onclick="setView('user-home');">Back</button>
+        <button onclick="setView('descriptor-create');">Create</button>
     </div>
 
     <div data-view="descriptorRecord-create">
         <h2>Create descriptor record</h2>
         <form>
-            <input type="text" name="SNAICardId" placeholder="SNAICardId">
-            <input type="text" name="profId" placeholder="profId">
-            <input type="text" name="descriptorId" placeholder="descriptorId">
-            <input type="text" name="instant" placeholder="Instant">
+            <span>Descriptor</span><br/>
+            <select name="descriptorId"></select>
+            <input type="datetime-local" name="instant" placeholder="Instant">
             <input type="text" name="comment" placeholder="Comment">
             <input type="submit" value="Create">
         </form>
+        <button onclick="setView('game-list');" > Back</button>
     </div>
     <div data-view="descriptorRecord-get"></div>
-    <div data-view="descriptorRecord-update">
+    <div data-view="descriptorRecord-update"> <!-- not used-->
         <h2>Update descriptor record
         </h2>
         <form>
-            <input type="text" name="SNAICardId" placeholder="SNAICardId">
-            <input type="text" name="profId" placeholder="profId">
-            <input type="text" name="descriptorId" placeholder="descriptorId">
             <input type="text" name="instant" placeholder="Instant">
             <input type="text" name="comment" placeholder="Comment">
             <input type="submit" value="Save">
@@ -239,26 +254,27 @@
     <div data-view="descriptorRecord-delete">
         <h2>Delete descriptor record</h2>
     </div>
-    <div data-view="descriporRecord-list">
-        <h2>List of descriptor records</h2>
+    <div data-view="descriptorRecord-list">
+        <table style="margin:auto" id="descriporRecord-list-table">
+        </table>
+        <button onclick="descriptorRecordAdd();" > Create</button>
+        <button onclick="setView('game-list');" > Back</button>
     </div>
 
 
     <div data-view="snaicard-create">
-        <h2>Create Game Card</h2>user-
+        <h2>Create Game Card</h2>
         <form>
-            <input type="text" name="gameId" placeholder="GameId">
-            <input type="text" name="userID" placeholder="UserId">
-            <input type="text" name="bettedProfsId" placeholder="BettedProfsId">
+            <div class="selectorBox" id="snaicard-create-prof-box"></div>
             <input type="submit" value="Create">
         </form>
+        <button onclick="GameListView();">back</button>
 
     </div>
     <div data-view="snaicard-get">
 
-        <h2>Get Game Card</h2>
     </div>
-    <div data-view="snaicard-update">
+    <div data-view="snaicard-update"> <!-- not used -->
         <h2>Update Game Card</h2>
         <form>
             <input type="text" name="gameId" placeholder="GameId">
@@ -271,14 +287,18 @@
         <h2>Delete Game Card</h2>
     </div>
     <div data-view="snaicard-list">
-        <h2>List of Game Cards</h2>
+        <table style="margin:auto" id="snaicard-list-table">
+        </table>
+        <button onclick="setView('game-list');">Back</button>
     </div>
 
     <script src="js/api.js"></script>
     <script src="js/User.js"></script>
     <script src="js/Professor.js"></script>
-    <script src="js/Descriptor.js"></script>
+    <script src="js/Descriptor.js"></script> 
     <script src="js/Game.js"></script>
+    <script src="js/SNAICard.js"></script>
+    <script src="js/DescriptorRecord.js"></script>
     <script src="js/ViewController.js"></script>
     <script src="main.js">
     </script>

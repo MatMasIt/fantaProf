@@ -29,7 +29,7 @@ class Descriptor {
             'token': this.user.storedData["token"]
         }, function process(data) {
             this.storedData = data;
-            this.onSuccess(data);z
+            this.onSuccess(data);
         }.bind(this), this.onFail);
 
     }

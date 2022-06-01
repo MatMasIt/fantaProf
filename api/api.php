@@ -13,6 +13,8 @@ require("dataObjects/Game.php");
 require("dataObjects/LoggedInUser.php");
 require("dataObjects/Professor.php");
 require("dataObjects/Descriptor.php");
+require("dataObjects/SNAICard.php");
+require("dataObjects/DescriptorRecord.php");
 try {
     $dataJson = json_decode(file_get_contents("php://input"), true);
     $database = new PDO("sqlite:database.sqlite3");
@@ -69,9 +71,9 @@ try {
             break;
         case "users/get":
             if ($u != LoggedInUser::NOT_AUTHENTICATED) {
-                $game = new Game($database, $u);
-                $game->get((int) $dataJson["id"]);
-                Reply::ok($game->serialize());
+                $u = new User($database, $u);
+                $u->get((int) $dataJson["id"]);
+                Reply::ok($u->serialize());
             }
             Reply::error("NOT_AUTHENTICATED");
             break;
@@ -149,6 +151,14 @@ try {
                 $g->update();
                 Reply::ok($g->serialize());
             }
+            break;
+        case "games/get":
+            if ($u != LoggedInUser::NOT_AUTHENTICATED) {
+                $u = new Game($database, $u);
+                $u->get((int) $dataJson["id"]);
+                Reply::ok($u->serialize());
+            }
+            Reply::error("NOT_AUTHENTICATED");
             break;
         case "professors/get":
 
@@ -286,7 +296,7 @@ try {
             break;
     }
 } catch (Exception $e) {
-    Reply::error(get_class($e) . " : " . $e->getMessage());
+    Reply::error(get_class($e) . " : " . $e->getMessage(), $e->getTraceAsString());
 }
 
 Reply::ok();

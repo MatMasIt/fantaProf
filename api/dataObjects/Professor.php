@@ -49,7 +49,7 @@ class Professor implements CRUDL, ASerializable //check
 
         // new OOP approach
         $game = new Game($this->database, $this->loggedInUser);
-        $gameList = $game->list();
+        $gameList = $game->list(false);
         foreach ($gameList as $d) {
             $l = $d->getDescriptorIds();
             $l->remove($this->id);

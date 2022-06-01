@@ -23,7 +23,7 @@ class Descriptor implements CRUDL, ASerializable
         $this->id = $id;
         $this->title = $r["title"];
         $this->authorId = (int) $r["authorId"];
-        $this->description = $r["decription"];
+        $this->description = $r["description"];
         $this->delta = (float) $r["delta"];
         $this->lastEdit = (int) $r["lastEdit"];
         $this->created = (int) $r["created"];
@@ -48,7 +48,7 @@ class Descriptor implements CRUDL, ASerializable
         $p = $this->database->prepare("DELETE FROM Descriptors WHERE id = :id");
         $p->execute([":id" => $this->id]);
 
-        $p = $this->database->prepare("DELETE FROM DescriptorRecords WHERE recordId = :id");
+        $p = $this->database->prepare("DELETE FROM DescriptorRecords WHERE descriptorId = :id");
         $p->execute([":id" => $this->id]);
         //cascade delete descriptor from all games
         /*
@@ -59,10 +59,13 @@ class Descriptor implements CRUDL, ASerializable
         il suo interventismo attuale è sintomo della reazione di una parte del vecchio regime che, 
         avendo accumulato ricchezza e potere negli anni Ottanta, 
         pretende di continuare a condizionare la vita politica anche negli anni Novanta»
+
+        Bettino Craxi succhia
+        Quando c'era lui si stava meglio, le strade 
         */
         // new OOP approach
         $game = new Game($this->database, $this->loggedInUser);
-        $gameList = $game->list();
+        $gameList = $game->list(false);
         foreach ($gameList as $d) {
             $l = $d->getDescriptorIds();
             $l->remove($this->id);
@@ -96,8 +99,7 @@ class Descriptor implements CRUDL, ASerializable
             ":delta" => $this->delta,
             ":created" => $this->created,
             ":description" => $this->description,
-            ":lastEdit" => $this->lastEdit,
-            ":id" => $this->id
+            ":lastEdit" => $this->lastEdit
         ]);
         $this->id = $this->database->lastInsertId();
     }
@@ -106,7 +108,7 @@ class Descriptor implements CRUDL, ASerializable
         $this->authorId = (int) $r["authorId"];
         $this->title = (string) $r["title"];
         $this->delta = (float) $r["delta"];
-        $this->delta = (string) $r["description"];
+        $this->description = (string) $r["description"];
     }
     public function serialize(): array
     {

@@ -88,6 +88,7 @@ class DescriptorRecord implements CRUDL, ASerializable
         // if they do not exist, an exception will be thrown
         //$this->SNAICardId = (int) $r["SNAICardId"]; //Cannot change this once created
         $this->profId = (int) $r["profId"];
+        $this->SNAICardId = (int) $r["SNAICardId"];
         $this->descriptorId = (int) $r["descriptorId"];
         $this->instant = (int) strtotime($r["instant"]);
         $this->comment = (string) $r["comment"];

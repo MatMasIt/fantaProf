@@ -21,7 +21,7 @@ class Game {
             'end': end,
             'professorIds': professorIds,
             'descriptorIds': descriptorIds,
-            'token': his.user.storedData["token"]
+            'token': this.user.storedData["token"]
         }, function process(data) {
             this.get(data["id"]);
         }.bind(this), this.onFail);
@@ -30,7 +30,7 @@ class Game {
         this.api.send({
             'action': this.namespace + "/get",
             'id': id,
-            'token': his.user.storedData["token"]
+            'token': this.user.storedData["token"]
         }, function process(data) {
             this.storedData = data;
             this.onSuccess(data);

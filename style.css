@@ -81,7 +81,7 @@ p {
   font-weight: 300;
 }
 
-input:not([type=submit], [type=hidden]) {
+input:not([type=submit], [type=hidden]), select {
   padding: 12px 20px;
   box-sizing: border-box;
   border: 2px solid #ccc;
@@ -102,4 +102,20 @@ th,
 td {
   border: 1px solid black;
   border-collapse: collapse;
+}
+
+
+.selectorBox {
+  border: 2px solid #ccc;
+  width: 300px;
+  height: 100px;
+  overflow-y: scroll;
+  background-color: white;
+  color: black;
+  font-size: 15px;
+  margin: auto;
+}
+
+input[type=checkbox] {
+  display: inline;
 }

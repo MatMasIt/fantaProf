@@ -22,8 +22,8 @@ class SNAICard implements CRUDL, ASerializable
         $this->id = (int) $id;
         $this->userId = (int) $r["userId"];
         $this->gameId = (int) $r["gameId"];
-        $this->bettedProfsId = new IdFieldList($this->database, new Professor($this->pdo, $this->loggedInUser, null));
-        $this->bettedProfsId->loadString($r["bettedProfsId"]);
+        $this->bettedProfsId = new IdFieldList(new Professor($this->database, $this->loggedInUser, null));
+        $this->bettedProfsId->loadString($r["bettedProfIds"]);
     }
     public function list($preserialize = true): array
     {
@@ -41,7 +41,7 @@ class SNAICard implements CRUDL, ASerializable
     }
     public function delete(): void
     {
-        if ($this->loggedInUser->getUser()->getId() != $this->authorId) throw new UnauthorizedException();
+        if ($this->loggedInUser->getUser()->getId() != $this->userId) throw new UnauthorizedException();
         $p = $this->database->prepare("DELETE FROM SNAICards WHERE id = :id");
         $p->execute([":id" => $this->id]);
 
@@ -51,6 +51,7 @@ class SNAICard implements CRUDL, ASerializable
     public function update(): void
     {
         if (!$this->id) throw new NotFoundException();
+        if ($this->loggedInUser->getUser()->getId() != $this->userId) throw new UnauthorizedException();
         $q = $this->database->prepare("UPDATE SNAICards SET gameId=:gameId, userId=:userId, bettedProfsId=:bettedProfsId WHERE id=:id");
         $q->execute([
             ":gameId" => $this->gameId,
@@ -62,14 +63,13 @@ class SNAICard implements CRUDL, ASerializable
     public function create(array $data): void
     {
         $this->deserialize($data);
-        $hash = password_hash($data["password"], PASSWORD_DEFAULT);
-        $q = $this->database->prepare("INSERT INTO SNAICard(gameId, userId, bettedProfsId) VALUES(:gameId, :userId, :bettedProfsId)");
+        $q = $this->database->prepare("INSERT INTO SNAICards(gameId, userId, bettedProfIds) VALUES(:gameId, :userId, :bettedProfIds)");
         $this->created = time();
         $this->lastEdit = $this->created;
         $q->execute([
             ":gameId" => $this->gameId,
-            ":userId" => $this->userId,
-            ":bettedProfsId" => (string) $this->bettedProfsId
+            ":userId" => $this->loggedInUser->getUser()->getId(),
+            ":bettedProfIds" => (string) $this->bettedProfsId
         ]);
         $this->id = $this->database->lastInsertId();
     }
@@ -80,9 +80,9 @@ class SNAICard implements CRUDL, ASerializable
 
         $this->gameId = (int) $r["gameId"];
         $this->userId = (int) $r["userId"];
-        $this->bettedProfsId = new IdFieldList($this->database, new Professor($this->database, $this->loggedInUser));
-        $this->bettedProfsId->setList($data["professors"]);
-        $this->forceMaxProfConstraint();
+        $this->bettedProfsId = new IdFieldList(new Professor($this->database, $this->loggedInUser));
+        $this->bettedProfsId->setList($r["bettedProfsId"]);
+        //$this->forceMaxProfConstraint(); Constraints? suure
     }
     public function serialize(): array
     {
@@ -112,7 +112,7 @@ class SNAICard implements CRUDL, ASerializable
 
     /**
      * Get the value of id
-     */ 
+     */
     public function getId()
     {
         return $this->id;
@@ -121,9 +121,9 @@ class SNAICard implements CRUDL, ASerializable
     private function forceMaxProfConstraint(): void
     {
         $game = new Game($this->database, $this->loggedInUser);
-        if($this->bettedProfsId->size() > $game->getMaxBettableProfs()){
+        if ($this->bettedProfsId->size() > $game->getMaxBettableProfs()) {
             $a = $this->bettedProfsId->getList();
-            $this->bettedProfsId->setList(array_slice($a,0,$game->getMaxBettableProfs));
+            $this->bettedProfsId->setList(array_slice($a, 0, $game->getMaxBettableProfs));
         }
     }
 }

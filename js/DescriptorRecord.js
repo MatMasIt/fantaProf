@@ -7,7 +7,7 @@ class DescriptorRecord {
         this.api = api;
         this.namespace = "descriptorRecords";
     }
-    create(title, SNAICardId, profId, descriptorId, instant, comment) {
+    create(SNAICardId, profId, descriptorId, instant, comment) {
         if (!this.user.authed) {
             this.onFail([]);
             return false;

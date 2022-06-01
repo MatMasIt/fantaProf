@@ -17,7 +17,7 @@ class User {
             this.storedData = data;
             this.authed = true;
             this.onSuccess(data);
-        }.bind(this).bind(this), this.onFail);
+        }.bind(this), this.onFail);
     }
     loginWithEmail(email, password) {
         this.api.send({
@@ -51,7 +51,7 @@ class User {
             'token': this.storedData["token"]
         }, this.onSuccess, this.onFail);
     }
-    get(id, token) {
+    get(id /*, token*/) {
         if (!this.authed) {
             this.onFail([]);
             return false;
@@ -59,12 +59,12 @@ class User {
         this.api.send({
             'action': "users/get",
             'id': id,
-            'token': token
+            'token': this.storedData["token"],
         }, function process(data) {
             // preserve token nontheless, when changing user in view
-            this.storedData = data;
-            this.storedData["token"] = token;
-            this.authed = true;
+            //this.storedData = data;
+            //this.storedData["token"] = token;
+            //this.authed = true;
             this.onSuccess(data);
         }.bind(this), this.onFail);
 

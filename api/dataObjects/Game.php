@@ -22,15 +22,17 @@ class Game implements CRUDL, ASerializable
         if (!$r) throw new NotFoundException();
         $this->id = $id;
         $this->gameMasterId = (int) $r["gameMasterId"];
-        $this->maxBettableProf = (int) $r["maxBettableProf"];
+        $this->maxBettableProfs = (int) $r["maxBettableProfs"];
         $this->start = (int) $r["start"];
         $this->end = (int) $r["end"];
         $this->title = $r["title"];
         $this->description = $r["description"];
-        $this->professorIds = new IdFieldList($this->database, new Professor($this->pdo, $this->loggedInUser, null));
+        $this->professorIds = new IdFieldList(new Professor($this->database, $this->loggedInUser));
         $this->professorIds->loadString($r["professorIds"]);
-        $this->descriptorIds = new IdFieldList($this->database, new Descriptor($this->pdo, $this->loggedInUser, null));
-        $this->professorIds->loadString($r["descriptorIds"]);
+        $this->descriptorIds = new IdFieldList(new Descriptor($this->database, $this->loggedInUser));
+        $this->descriptorIds->loadString($r["descriptorIds"]);
+        $this->lastEdit = (int) $r["lastEdit"];
+        $this->created = (int) $r["created"];
     }
     public function list($preserialize = true): array
     {
@@ -49,7 +51,7 @@ class Game implements CRUDL, ASerializable
     public function delete(): void
     {
         if (!$this->loggedInUser) throw new AuthErrorException();
-        if ($this->loggedInUser->getUser()->getId() != $this->id) throw new UnauthorizedException();
+        if ($this->loggedInUser->getUser()->getId() != $this->gameMasterId) throw new UnauthorizedException();
         $p = $this->database->prepare("DELETE FROM Games WHERE id = :id");
         $p->execute([":id" => $this->id]);
     }
@@ -58,7 +60,7 @@ class Game implements CRUDL, ASerializable
         if (!$this->id) throw new NotFoundException();
         if (!$this->loggedInUser) throw new AuthErrorException();
         if ($this->loggedInUser->getUser()->getId() != $this->gameMasterId) throw new UnauthorizedException();
-        $q = $this->database->prepare("UPDATE Games SET title=:title, gameMasteId=:gameMasterId, maxBettableProfs=:maxBettableProfs, start=:start, end=:end, professorIds=:professorIds, descriptorIds=:descriptorIds, lastEdite=:lastEdite WHERE id=:id");
+        $q = $this->database->prepare("UPDATE Games SET title=:title, description=:description, gameMasterId=:gameMasterId, maxBettableProfs=:maxBettableProfs, start=:start, end=:end, professorIds=:professorIds, descriptorIds=:descriptorIds, lastEdit=:lastEdit WHERE id=:id");
         $q->execute([
             ":title" => $this->title,
             ":description" => $this->description,
@@ -75,7 +77,7 @@ class Game implements CRUDL, ASerializable
     public function create(array $data): void
     {
         $this->deserialize($data);
-        $hash = password_hash($data["password"], PASSWORD_DEFAULT);
+        $this->gameMasterId = $this->loggedInUser->getUser()->getId();
         $q = $this->database->prepare("INSERT INTO Games(title, description, gameMasterId, maxBettableProfs, start, end, professorIds, descriptorIds, lastEdit, created) VALUES(:title, :description, :gameMasterId, :maxBettableProfs, :start, :end, :professorIds, :descriptorIds, :lastEdit, :created)");
         $this->created = time();
         $this->lastEdit = $this->created;
@@ -91,7 +93,6 @@ class Game implements CRUDL, ASerializable
             ":lastEdit" => $this->lastEdit,
             ":created" => $this->created
         ]);
-        $this->passwordHash = $hash;
         $this->id = $this->database->lastInsertId();
     }
     public function deserialize(array $r): void
@@ -102,10 +103,10 @@ class Game implements CRUDL, ASerializable
         $this->maxBettableProfs = (int) $r["maxBettableProfs"];
         $this->start = (int) strtotime($r["start"]);
         $this->end = (int) strtotime($r["end"]);
-        $this->professorIds = new IdFieldList($this->database, new Professor($this->database, $this->loggedInUser));
+        $this->professorIds = new IdFieldList(new Professor($this->database, $this->loggedInUser));
         $this->professorIds->setList($r["professorIds"]);
-        $this->descriptorIds = new IdFieldList($this->database, new Descriptor($this->database, $this->loggedInUser));
-        $this->professorIds->setList($r["descriptorIds"]);
+        $this->descriptorIds = new IdFieldList(new Descriptor($this->database, $this->loggedInUser));
+        $this->descriptorIds->setList($r["descriptorIds"]);
     }
     public function serialize(): array
     {
@@ -121,7 +122,7 @@ class Game implements CRUDL, ASerializable
             "start" => date("c", $this->start),
             "end" => date("c", $this->end),
             "professorIds" => $this->professorIds->getList(),
-            "descriptorIds" => (string) $this->descriptorIds->getList(),
+            "descriptorIds" =>  $this->descriptorIds->getList(),
             "lastEdit" => date("c", $this->lastEdit),
             "created" => date("c", $this->created)
         ];
@@ -255,7 +256,7 @@ class Game implements CRUDL, ASerializable
 
     /**
      * Get the value of id
-     */ 
+     */
     public function getId()
     {
         return $this->id;
