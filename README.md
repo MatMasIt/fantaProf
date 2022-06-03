@@ -4,4 +4,5 @@ Il rivoluzionario videogioco online per celebrare la millenaria tradizione scola
 Grandi avventure e sanzioni pecuniarie aspettano giocatori e Game Masters.
 Work in progress
 
-[Screenshots](screenshots/)
+
+[Screenshots](screenshots/README.md)
